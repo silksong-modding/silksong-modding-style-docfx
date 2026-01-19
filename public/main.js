@@ -7,7 +7,7 @@ export default {
     },
     {
       icon: "discord",
-      href: "https://discord.gg/VDsg3HmWuB",
+      href: "https://discord.gg/Bhsxurh2sU",
       title: "Discord",
     },
   ],
