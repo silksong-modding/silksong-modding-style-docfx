@@ -1,0 +1,32 @@
+﻿@font-face {
+	font-family: "TrajanPro";
+	src: local("Trajan Pro"), local("TrajanPro-Regular"), url("/public/fonts/TrajanPro-Regular.otf") format("opentype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "TrajanPro";
+	src: local("Trajan Pro"), local("TrajanPro-Bold"), url("/public/fonts/TrajanPro-Bold.otf") format("opentype");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Perpetua";
+	src: local("Perpetua"), local("Perpetua"), url("/public/fonts/Perpetua.ttf") format("truetype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+:root {
+	--font-header-serif: TrajanPro,"Times New Roman",serif;
+	--font-body-serif: Perpetua,"Times New Roman",serif;
+	--bs-font-sans-serif: Lato,Roboto,Arial,sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-family: var(--font-header-serif);
+}
