@@ -5,6 +5,7 @@
 	font-style: normal;
 	font-display: swap;
 }
+
 @font-face {
 	font-family: "TrajanPro";
 	src: local("Trajan Pro"), local("TrajanPro-Bold"), url("/public/fonts/TrajanPro-Bold.otf") format("opentype");
@@ -14,19 +15,164 @@
 }
 
 @font-face {
+	font-family: "TrajanPro-Fallback";
+	src: local(Times New Roman);
+	size-adjust: 113%;
+	ascent-override: 74%;
+	descent-override: 28%;
+	line-gap-override: normal;
+}
+
+
+@font-face {
 	font-family: "Perpetua";
-	src: local("Perpetua"), local("Perpetua"), url("/public/fonts/Perpetua.ttf") format("truetype");
+	src: local("Perpetua"), url("/public/fonts/Perpetua.ttf") format("truetype");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
 
+@font-face {
+	font-family: "Perpetua-Fallback";
+	src: local(Times New Roman);
+	size-adjust: 90%;
+	ascent-override: normal;
+	descent-override: 36%;
+	line-gap-override: normal;
+}
+
 :root {
-	--font-header-serif: TrajanPro,"Times New Roman",serif;
-	--font-body-serif: Perpetua,"Times New Roman",serif;
+	--font-header-serif: TrajanPro,"TrajanPro-Fallback","Times New Roman",serif;
+	--font-body-serif: Perpetua,"Perpetua-Fallback","Times New Roman",serif;
 	--bs-font-sans-serif: Lato,Roboto,Arial,sans-serif;
 }
 
+/* COLOURS */
+
+[data-bs-theme="dark"] {
+	--bs-body-bg-rgb: 46,35,32;
+	--bs-body-bg: rgb(var(--bs-body-bg-rgb));
+	--bs-secondary-bg-rgb: 93,82,77;
+	--bs-secondary-bg: rgb(var(--bs-secondary-bg-rgb));
+	--bs-link-color-rgb: 255,159,104;
+	--bs-link-hover-color-rgb: 255,176,131;
+	--bs-border-color: var(--bs-body-color);
+}
+
+.form-control {
+	background-color: var(--bs-secondary-bg);
+}
+
+[data-bs-theme="light"] {
+}
+
+	/* TABLE OF CONTENTS (LEFT) */
+
+	[data-bs-theme="light"] nav#toc:before,
+	[data-bs-theme="light"] nav#toc > div > ul:after {
+		filter: brightness(0.4);
+	}
+
+nav#toc:before {
+	content: "\2003";
+	background: no-repeat center/contain url("/public/images/dialogue_fleur_top.png");
+	height: 2em;
+	margin-bottom: calc(var(--bs-gutter-x) * 0.75);
+}
+
+nav#toc > div > ul:after {
+	content: "\2003";
+	display: block;
+	background: no-repeat center/contain url("/public/images/dialogue_fleur_bottom.png");
+	min-height: 100%;
+	margin-top: var(--bs-gutter-x);
+}
+
+/* TABLE OF CONTENTS (RIGHT) */
+
+[data-bs-theme="light"] nav#affix:before,
+[data-bs-theme="light"] nav#affix:after {
+	filter: brightness(0.4);
+}
+
+nav#affix {
+	border: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+	nav#affix:before {
+		content: "\2003";
+		background: no-repeat center/contain url("/public/images/fleur_generic_top.png");
+		min-height: 100%;
+		height: 2rem;
+		margin-bottom: calc(var(--bs-gutter-x) * 0.1);
+	}
+
+	nav#affix:after {
+		content: "\2003";
+		background: no-repeat center/contain url("/public/images/fleur_generic_bottom.png");
+		min-height: 100%;
+	}
+
+/* ALERT BOXES */
+
+[data-bs-theme="light"] .alert:before,
+[data-bs-theme="light"] .alert:after {
+	filter: brightness(0.4);
+}
+
+.alert {
+	text-align: center;
+	margin: 3.5rem 0 2.5rem;
+	border: 0;
+	box-shadow: 0 0 0.25rem 0.25rem;
+}
+
+	.alert:before {
+		content: "\2003";
+		display: block;
+		background: no-repeat center/contain url("/public/images/fleur_generic_top.png");
+		min-height: 100%;
+		height: 2.2em;
+		margin-bottom: calc(var(--bs-gutter-x) * 0.5);
+		margin-top: -3rem;
+	}
+
+	.alert:after {
+		content: "\2003";
+		display: block;
+		background: no-repeat center/contain url("/public/images/fleur_generic_bottom.png");
+		min-height: 100%;
+		margin-bottom: -2rem;
+	}
+
+.alert-info {
+	box-shadow: 0 0 0.25rem 0.25rem var(--bs-info-bg-subtle);
+}
+
+.alert-warning {
+	box-shadow: 0 0 0.25rem 0.25rem var(--bs-warning-bg-subtle);
+}
+
+.alert-danger {
+	box-shadow: 0 0 0.25rem 0.25rem var(--bs-danger-bg-subtle);
+}
+
+/* MISC? */
+
 h1, h2, h3, h4, h5, h6 {
 	font-family: var(--font-header-serif);
+	line-height: 1.3;
+}
+
+h1, h2, hr, nav#affix h5 {
+	border-image: linear-gradient(to right, var(--bs-body-color) 0%,var(--bs-body-color) 50%, rgba(0,0,0,0) 100%);
+	border-image-width: var(--bs-border-width) 0;
+	border-image-slice: 0 0 1;
+}
+
+.alert {
+	font-family: var(--font-body-serif);
+	font-size: calc(var(--bs-body-font-size) * 1.2);
 }
