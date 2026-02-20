@@ -1,19 +1,17 @@
 ﻿@font-face {
 	font-family: "TrajanPro";
-	src: local("Trajan Pro"), local("TrajanPro-Regular"), url("/public/fonts/TrajanPro-Regular.otf") format("opentype");
+	src: local("Trajan Pro"), local("TrajanPro-Regular"), url("fonts/TrajanPro-Regular.otf") format("opentype");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
-
 @font-face {
 	font-family: "TrajanPro";
-	src: local("Trajan Pro"), local("TrajanPro-Bold"), url("/public/fonts/TrajanPro-Bold.otf") format("opentype");
+	src: local("Trajan Pro"), local("TrajanPro-Bold"), url("fonts/TrajanPro-Bold.otf") format("opentype");
 	font-weight: 600;
 	font-style: normal;
 	font-display: swap;
 }
-
 @font-face {
 	font-family: "TrajanPro-Fallback";
 	src: local(Times New Roman);
@@ -23,15 +21,13 @@
 	line-gap-override: normal;
 }
 
-
 @font-face {
 	font-family: "Perpetua";
-	src: local("Perpetua"), url("/public/fonts/Perpetua.ttf") format("truetype");
+	src: local("Perpetua"), url("fonts/Perpetua.ttf") format("truetype");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
 }
-
 @font-face {
 	font-family: "Perpetua-Fallback";
 	src: local(Times New Roman);
@@ -50,32 +46,57 @@
 /* COLOURS */
 
 [data-bs-theme="dark"] {
+	--bs-body-color: rgb(228,227,226);
 	--bs-body-bg-rgb: 46,35,32;
 	--bs-body-bg: rgb(var(--bs-body-bg-rgb));
 	--bs-secondary-bg-rgb: 93,82,77;
 	--bs-secondary-bg: rgb(var(--bs-secondary-bg-rgb));
+	--bs-tertiary-bg-rgb: 23,11,8;
+	--bs-tertiary-bg: rgb(var(--bs-tertiary-bg-rgb));
 	--bs-link-color-rgb: 255,159,104;
 	--bs-link-hover-color-rgb: 255,176,131;
 	--bs-border-color: var(--bs-body-color);
+	--bs-warning-bg-subtle: rgb(62,51,34);
+	--bs-warning-border-subtle: rgb(255,245,157);
+	--bs-danger-bg-subtle: #3d2c2a;
+	--bs-danger-border-subtle: #ef9a9a;
+	--bs-info-bg-subtle: rgba(144,202,249,0.1);
+	--bs-info-border-subtle: rgb(144,202,249);
+}
+
+[data-bs-theme="dark"] .alert {
+	color: var(--bs-alert-border-color);
+}
+
+[data-bs-theme="dark"] code.hljs {
+	background: var(--bs-tertiary-bg);
+}
+
+[data-bs-theme="light"] {
+}
+
+/* Inverting the colour of fleurs for light mode */
+[data-bs-theme="light"] nav#toc:before,
+[data-bs-theme="light"] nav#toc > div > ul:after,
+[data-bs-theme="light"] nav#affix:before,
+[data-bs-theme="light"] nav#affix:after,
+[data-bs-theme="light"] .alert:before {
+	filter: brightness(0.1);
+}
+
+.navbar#autocollapse {
+	background: var(--bs-tertiary-bg);
 }
 
 .form-control {
 	background-color: var(--bs-secondary-bg);
 }
 
-[data-bs-theme="light"] {
-}
-
-	/* TABLE OF CONTENTS (LEFT) */
-
-	[data-bs-theme="light"] nav#toc:before,
-	[data-bs-theme="light"] nav#toc > div > ul:after {
-		filter: brightness(0.4);
-	}
+/* TABLE OF CONTENTS (LEFT) */
 
 nav#toc:before {
 	content: "\2003";
-	background: no-repeat center/contain url("/public/images/dialogue_fleur_top.png");
+	background: no-repeat center/contain url("images/dialogue_fleur_top.png");
 	height: 2em;
 	margin-bottom: calc(var(--bs-gutter-x) * 0.75);
 }
@@ -83,17 +104,12 @@ nav#toc:before {
 nav#toc > div > ul:after {
 	content: "\2003";
 	display: block;
-	background: no-repeat center/contain url("/public/images/dialogue_fleur_bottom.png");
+	background: no-repeat center/contain url("images/dialogue_fleur_bottom.png");
 	min-height: 100%;
 	margin-top: var(--bs-gutter-x);
 }
 
 /* TABLE OF CONTENTS (RIGHT) */
-
-[data-bs-theme="light"] nav#affix:before,
-[data-bs-theme="light"] nav#affix:after {
-	filter: brightness(0.4);
-}
 
 nav#affix {
 	border: 0;
@@ -101,67 +117,44 @@ nav#affix {
 	flex-direction: column;
 }
 
-	nav#affix:before {
-		content: "\2003";
-		background: no-repeat center/contain url("/public/images/fleur_generic_top.png");
-		min-height: 100%;
-		height: 2rem;
-		margin-bottom: calc(var(--bs-gutter-x) * 0.1);
-	}
+nav#affix:before {
+	content: "\2003";
+	background: no-repeat center/contain url("/public/images/fleur_hornet_top.png");
+	min-height: 100%;
+	height: 2rem;
+	margin-bottom: calc(var(--bs-gutter-x) * 0.1);
+}
 
-	nav#affix:after {
-		content: "\2003";
-		background: no-repeat center/contain url("/public/images/fleur_generic_bottom.png");
-		min-height: 100%;
-	}
+nav#affix:after {
+	content: "\2003";
+	background: no-repeat center/contain url("/public/images/fleur_hornet_bottom.png");
+	min-height: 100%;
+}
 
 /* ALERT BOXES */
 
-[data-bs-theme="light"] .alert:before,
-[data-bs-theme="light"] .alert:after {
-	filter: brightness(0.4);
-}
-
 .alert {
-	text-align: center;
-	margin: 3.5rem 0 2.5rem;
-	border: 0;
-	box-shadow: 0 0 0.25rem 0.25rem;
+	border-radius: 0;
 }
 
-	.alert:before {
-		content: "\2003";
-		display: block;
-		background: no-repeat center/contain url("/public/images/fleur_generic_top.png");
-		min-height: 100%;
-		height: 2.2em;
-		margin-bottom: calc(var(--bs-gutter-x) * 0.5);
-		margin-top: -3rem;
-	}
-
-	.alert:after {
-		content: "\2003";
-		display: block;
-		background: no-repeat center/contain url("/public/images/fleur_generic_bottom.png");
-		min-height: 100%;
-		margin-bottom: -2rem;
-	}
-
-.alert-info {
-	box-shadow: 0 0 0.25rem 0.25rem var(--bs-info-bg-subtle);
+.alert > *:last-child {
+	margin-bottom: 0;
 }
 
-.alert-warning {
-	box-shadow: 0 0 0.25rem 0.25rem var(--bs-warning-bg-subtle);
-}
-
-.alert-danger {
-	box-shadow: 0 0 0.25rem 0.25rem var(--bs-danger-bg-subtle);
+.alert:before {
+	content: "\2003";
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	border-image: url("images/inventory_cursor_corners.png") 53 / 1.8rem;
+	margin: -0.25rem;
 }
 
 /* MISC? */
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .navbar .navbar-brand {
 	font-family: var(--font-header-serif);
 	line-height: 1.3;
 }
@@ -170,6 +163,10 @@ h1, h2, hr, nav#affix h5 {
 	border-image: linear-gradient(to right, var(--bs-body-color) 0%,var(--bs-body-color) 50%, rgba(0,0,0,0) 100%);
 	border-image-width: var(--bs-border-width) 0;
 	border-image-slice: 0 0 1;
+}
+
+.alert h5 {
+	text-transform: none;
 }
 
 .alert {
