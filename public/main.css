@@ -1,4 +1,6 @@
-﻿@font-face {
+﻿/* FONTS */
+
+@font-face {
 	font-family: "TrajanPro";
 	src: local("Trajan Pro"), local("TrajanPro-Regular"), url("fonts/TrajanPro-Regular.otf") format("opentype");
 	font-weight: 400;
@@ -19,6 +21,7 @@
 	ascent-override: 74%;
 	descent-override: 28%;
 	line-gap-override: normal;
+	font-display: swap;
 }
 
 @font-face {
@@ -35,6 +38,7 @@
 	ascent-override: normal;
 	descent-override: 36%;
 	line-gap-override: normal;
+	font-display: swap;
 }
 
 :root {
@@ -45,56 +49,85 @@
 
 /* COLOURS */
 
-[data-bs-theme="dark"] {
-	--bs-body-color: rgb(228,227,226);
-	--bs-body-bg-rgb: 46,35,32;
+:root {
 	--bs-body-bg: rgb(var(--bs-body-bg-rgb));
-	--bs-secondary-bg-rgb: 93,82,77;
 	--bs-secondary-bg: rgb(var(--bs-secondary-bg-rgb));
-	--bs-tertiary-bg-rgb: 23,11,8;
 	--bs-tertiary-bg: rgb(var(--bs-tertiary-bg-rgb));
-	--bs-link-color-rgb: 255,159,104;
-	--bs-link-hover-color-rgb: 255,176,131;
 	--bs-border-color: var(--bs-body-color);
-	--bs-warning-bg-subtle: rgb(62,51,34);
-	--bs-warning-border-subtle: rgb(255,245,157);
-	--bs-danger-bg-subtle: #3d2c2a;
-	--bs-danger-border-subtle: #ef9a9a;
-	--bs-info-bg-subtle: rgba(144,202,249,0.1);
-	--bs-info-border-subtle: rgb(144,202,249);
 }
-
-[data-bs-theme="dark"] .alert {
+.navbar#autocollapse {
+	background: var(--bs-tertiary-bg);
+}
+.form-control {
+	background-color: var(--bs-secondary-bg);
+}
+[data-bs-theme] .alert {
 	color: var(--bs-alert-border-color);
 }
 
+[data-bs-theme="dark"] {
+	--bs-body-color: #e4e3e2;
+
+	--bs-body-bg-rgb: 46,35,32;
+	--bs-secondary-bg-rgb: 93,82,77;
+	--bs-tertiary-bg-rgb: 30,14,11;
+	--bs-link-color-rgb: 255,159,104;
+	--bs-link-hover-color-rgb: 255,176,131;
+
+	--bs-info-bg-subtle:     #90caf915;
+	--bs-info-border-subtle: #90caf9;
+
+	--bs-warning-bg-subtle:     #fff59d15;
+	--bs-warning-border-subtle: #fff59d;
+
+	--bs-danger-bg-subtle:     #ef9a9a15;
+	--bs-danger-border-subtle: #ef9a9a;
+}
 [data-bs-theme="dark"] code.hljs {
 	background: var(--bs-tertiary-bg);
 }
 
 [data-bs-theme="light"] {
+	--bs-body-color: #090707;
+
+	--bs-body-bg-rgb: 241,235,236;
+	--bs-secondary-bg-rgb: 227,215,216;
+	--bs-tertiary-bg-rgb: 224,205,207;
+	--bs-link-color-rgb: 184,67,0;
+	--bs-link-hover-color-rgb: 235,85,0;
+
+	--bs-info-bg-subtle:     #0054991a;
+	--bs-info-border-subtle: #005499;
+
+	--bs-warning-bg-subtle:     #fff59d47;
+	--bs-warning-border-subtle: #706500;
+
+	--bs-danger-bg-subtle:     #8415151a;
+	--bs-danger-border-subtle: #841515;
+}
+[data-bs-theme="light"] code.hljs {
+	background: var(--bs-secondary-bg);
 }
 
-/* Inverting the colour of fleurs for light mode */
+/* Invert the colour of fleurs for light mode */
 [data-bs-theme="light"] nav#toc:before,
 [data-bs-theme="light"] nav#toc > div > ul:after,
 [data-bs-theme="light"] nav#affix:before,
 [data-bs-theme="light"] nav#affix:after,
 [data-bs-theme="light"] .alert:before {
-	filter: brightness(0.1);
+	filter: brightness(0.15) sepia(1) hue-rotate(-40deg) saturate(2);
 }
 
-.navbar#autocollapse {
-	background: var(--bs-tertiary-bg);
+/* Match header buttons to fleurs */
+[data-bs-theme="light"] .btn {
+	--bs-btn-color: #432923;
 }
 
-.form-control {
-	background-color: var(--bs-secondary-bg);
-}
 
 /* TABLE OF CONTENTS (LEFT) */
 
 nav#toc:before {
+	/* em space; needed for pseudo-element to render */
 	content: "\2003";
 	background: no-repeat center/contain url("images/dialogue_fleur_top.png");
 	height: 2em;
