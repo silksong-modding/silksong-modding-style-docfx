@@ -129,7 +129,7 @@
 nav#toc:before {
 	/* em space; needed for pseudo-element to render */
 	content: "\2003";
-	background: no-repeat center/contain url("images/dialogue_fleur_top.png");
+	background: no-repeat center/contain url("images/fleur_top.svg");
 	height: 2em;
 	margin-bottom: calc(var(--bs-gutter-x) * 0.75);
 }
@@ -137,7 +137,7 @@ nav#toc:before {
 nav#toc > div > ul:after {
 	content: "\2003";
 	display: block;
-	background: no-repeat center/contain url("images/dialogue_fleur_bottom.png");
+	background: no-repeat center/contain url("images/fleur_bottom.svg");
 	min-height: 100%;
 	margin-top: var(--bs-gutter-x);
 }
@@ -152,7 +152,7 @@ nav#affix {
 
 nav#affix:before {
 	content: "\2003";
-	background: no-repeat center/contain url("/public/images/fleur_hornet_top.png");
+	background: no-repeat center/contain url("/public/images/fleur_top.svg");
 	min-height: 100%;
 	height: 2rem;
 	margin-bottom: calc(var(--bs-gutter-x) * 0.1);
@@ -160,7 +160,7 @@ nav#affix:before {
 
 nav#affix:after {
 	content: "\2003";
-	background: no-repeat center/contain url("/public/images/fleur_hornet_bottom.png");
+	background: no-repeat center/contain url("/public/images/fleur_bottom.svg");
 	min-height: 100%;
 }
 
@@ -181,8 +181,7 @@ nav#affix:after {
 	bottom: 0;
 	left: 0;
 	right: 0;
-	border-image: url("images/inventory_cursor_corners.png") 53 / 1.8rem;
-	margin: -0.25rem;
+	border-image: url("images/inventory_cursor.svg") 48 / 1.8rem / 0.25rem;
 }
 
 /* MISC? */
