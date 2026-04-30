@@ -327,6 +327,11 @@ article {
 
 /* MISC */
 
+#logo {
+	width: 3.2rem;
+	aspect-ratio: 1;
+}
+
 h1, h2, h3, h4, h5, h6, .navbar .navbar-brand {
 	font-family: var(--font-header-serif);
 	line-height: 1.3;
