@@ -133,7 +133,7 @@ decorative fleurs they shouldn't have anything readable in them.
 	--bs-body-color-rgb: 14,11,11;
 	--bs-secondary-color-rgb: 104,74,74;
 	--bs-tertiary-color-rgb: 113,91,91;
-	--bs-link-color-rgb: 176,64,0;
+	--bs-link-color-rgb: 168, 59, 0;
 	--bs-link-hover-color-rgb: 235,85,0;
 
 	--bs-body-bg-rgb: 238,231,233;
@@ -440,4 +440,35 @@ a {
 .form-control {
 	background-color: var(--bs-secondary-bg);
 	border-radius: 0; 
+}
+
+/* SEARCH */
+
+#search-results {
+	padding-inline: var(--bs-gutter-x);
+
+	.search-list {
+		color: var(--bs-secondary-color);
+		font-family: var(--font-body-serif);
+		font-size: 1.2rem;
+		font-style: italic;
+		margin-bottom: 0.3em;
+	}
+
+	> .sr-items .sr-item {
+		.item-title {
+			font-family: var(--font-header-serif);
+		}
+
+		.item-href {
+			color: var(--bs-tertiary-color);
+			font-size: 0.85rem;
+			font-style: italic;
+			margin-bottom: .3rem;
+		}
+
+		.item-brief {
+			font-size: 1em;
+		}
+	}
 }
