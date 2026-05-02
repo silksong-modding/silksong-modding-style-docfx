@@ -10,55 +10,65 @@ decorative fleurs they shouldn't have anything readable in them.
 
 @font-face {
 	font-family: "TrajanPro";
-	src: local("Trajan Pro"), local("TrajanPro"), local("TrajanPro-Regular"), url("fonts/TrajanPro-Regular.otf") format("opentype");
-	font-weight: 400;
+	src: local("Trajan Pro Regular"), local("TrajanPro-Regular"),
+        url("fonts/TrajanPro-Regular.woff2") format("woff2"),
+        url("fonts/TrajanPro-Regular.woff") format("woff"),
+        url("fonts/TrajanPro-Regular.ttf") format("truetype");
+	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "TrajanPro";
-	src: local("Trajan Pro"), local("TrajanPro"), local("TrajanPro-Bold"), url("fonts/TrajanPro-Bold.otf") format("opentype");
-	font-weight: 600;
+	src: local("Trajan Pro Bold"), local("TrajanPro-Bold"),
+        url("fonts/TrajanPro-Bold.woff2") format("woff2"),
+        url("fonts/TrajanPro-Bold.woff") format("woff"),
+        url("fonts/TrajanPro-Bold.ttf") format("truetype");
+	font-weight: bold;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "TrajanPro-Fallback";
 	src: local(Times New Roman);
-	size-adjust: 113%;
-	ascent-override: 74%;
-	descent-override: 28%;
-	line-gap-override: normal;
 	font-display: swap;
+	font-feature-settings: "smcp" on, "cpsp" on;
+	size-adjust: 113%;
+	ascent-override: 75%;
+	descent-override: 29%;
+	line-gap-override: normal;
 }
 
 @font-face {
 	font-family: "Perpetua";
-	src: local("Perpetua"), url("fonts/Perpetua.ttf") format("truetype");
-	font-weight: 400;
+	src: local("Perpetua"),
+		url("fonts/Perpetua.woff2") format("woff2"),
+		url("fonts/Perpetua.woff") format("woff"),
+		url("fonts/Perpetua.ttf") format("truetype");
+	font-weight: normal;
 	font-style: normal;
 	font-display: swap;
 }
 @font-face {
 	font-family: "Perpetua-Fallback";
 	src: local(Times New Roman);
-	size-adjust: 90%;
-	ascent-override: normal;
-	descent-override: 36%;
-	line-gap-override: normal;
 	font-display: swap;
+	size-adjust: 91%;
+	ascent-override: 89%;
+	descent-override: 31%;
+	line-gap-override: normal;
 }
 
 :root {
-	--font-header-serif: TrajanPro,"TrajanPro-Fallback","Times New Roman",serif;
-	--font-body-serif: Perpetua,"Perpetua-Fallback","Times New Roman",serif;
+	--font-header-serif: "TrajanPro","TrajanPro-Fallback";
+	--font-body-serif: "Perpetua","Perpetua-Fallback";
 	--bs-font-sans-serif: Lato,Roboto,Arial,sans-serif;
 }
 .toc span.name-only {
 	font-family: var(--font-header-serif);
 }
 
-/* FIXING COLOUR VARIABLES */
+/* FIXING VARIABLES */
 
 :root {
 	--bs-body-bg: rgb(var(--bs-body-bg-rgb));
@@ -174,7 +184,7 @@ decorative fleurs they shouldn't have anything readable in them.
 	}
 }
 
-/* SKIP-TO-CONTENT LINK */
+/* ACCESSIBILITY UTILITIES */
 
 #skip-to-content {
 	font-family: var(--font-header-serif);
@@ -202,6 +212,75 @@ decorative fleurs they shouldn't have anything readable in them.
 	}
 }
 
+.sr-only {
+	border: 0;
+    padding: 0;
+    margin: 0;
+    position: absolute !important;
+    height: 1px; 
+    width: 1px;
+    overflow: hidden;
+    clip: rect(1px 1px 1px 1px);
+    clip: rect(1px, 1px, 1px, 1px);
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* HEADER/NAV */
+
+body > header {
+	height: fit-content;
+
+	#logo {
+		width: 3.2rem;
+		aspect-ratio: 1;
+	}
+
+	.navbar {
+		padding: var(--bs-navbar-padding-y) calc(var(--bs-gutter-x) * .5);
+		background: var(--bs-tertiary-bg);
+	}
+
+	.brand-container {
+		gap: calc(var(--bs-gutter-x) * .25);
+	}
+
+	.brand-links {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		flex-direction: column;
+		margin-right: var(--bs-navbar-brand-margin-end);
+	}
+
+	.navbar .navbar-brand {
+		display: block;
+		margin: 0;
+		text-align: center;
+		padding: 0;
+
+		&:hover {
+			color: rgb(var(--bs-link-color-rgb));
+		}
+
+		&:first-of-type:not(:only-of-type) {
+			font-size: calc(0.7 * var(--bs-navbar-brand-font-size));
+			border-image: linear-gradient(to right, rgba(0,0,0,0) 0%, var(--bs-body-color) 20%, var(--bs-body-color) 80%, rgba(0,0,0,0) 100%);
+			border-image-width: var(--bs-border-width) 0;
+			border-image-slice: 0 0 1;
+		}
+
+		+ .navbar-brand {
+			padding-top: 0.2rem;
+			margin-bottom: -0.1rem;
+		}
+	}
+}
+[data-bs-theme="dark"] #logo {
+	filter: drop-shadow(0 0 2px rgba(var(--bs-body-color-rgb), 0.2))
+		drop-shadow(0 0 6px rgba(var(--bs-body-color-rgb), 0.2));
+}
+
 /* TABLE OF CONTENTS (LEFT) */
 
 nav#toc {
@@ -218,6 +297,10 @@ nav#toc {
 		background: no-repeat center/contain url("images/fleur_bottom.svg");
 		min-height: 100%;
 		margin-top: calc(var(--bs-gutter-x) * 0.75);
+	}
+
+	span.name-only {
+		margin: .6rem 0 0;
 	}
 }
 
@@ -327,9 +410,8 @@ article {
 
 /* MISC */
 
-#logo {
-	width: 3.2rem;
-	aspect-ratio: 1;
+footer {
+	background: var(--bs-tertiary-bg);
 }
 
 h1, h2, h3, h4, h5, h6, .navbar .navbar-brand {
@@ -343,14 +425,16 @@ h1, h2, hr, nav#affix h5 {
 	border-image-slice: 0 0 1;
 }
 
+.next-article {
+	border-image: linear-gradient(to right, rgba(0,0,0,0) 0%, var(--bs-body-color) 20%, var(--bs-body-color) 80%, rgba(0,0,0,0) 100%);
+	border-image-width: var(--bs-border-width) 0;
+	border-image-slice: 1 0 0;
+}
+
 a {
 	color: rgb(var(--bs-link-color-rgb));
 	transition: all ease 0.1s;
 	text-shadow: 0 0 0em rgba(var(--bs-body-color-rgb), 0);
-}
-
-.navbar#autocollapse {
-	background: var(--bs-tertiary-bg);
 }
 
 .form-control {

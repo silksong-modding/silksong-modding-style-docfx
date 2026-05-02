@@ -1,0 +1,72 @@
+{{!Largely copied from docfx modern and docfx default, but separated into a few partials and provided with a few missing accessibility features.}}
+
+{{!include(/^public/.*/)}}
+{{!include(favicon.ico)}}
+{{!include(logo.svg)}}
+
+<!DOCTYPE html>
+<html {{#_lang}}lang="{{_lang}}"{{/_lang}}{{^_lang}}lang="en"{{/_lang}}>
+
+	{{>partials/head}}
+	
+	{{^redirect_url}}
+	<body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
+
+		{{!skip-links are a recommended accessibility feature for screen reader and keyboard-navigating users.}}
+		<a id="skip-to-content" href="#main-article-anchor">skip to main content</a>
+	
+		{{>partials/header}}
+	
+		<main class="container-xxl">
+			{{^_disableToc}}
+			{{>partials/toc}}
+			{{/_disableToc}}
+		
+			<div class="content">
+				<div class="actionbar">
+					{{^_disableToc}}
+					<button class="btn btn-lg border-0 d-md-none"
+							type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
+							aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+						<i class="bi bi-list"></i>
+					</button>
+					{{/_disableToc}}
+
+					{{^_disableBreadcrumb}}
+					<nav id="breadcrumb"></nav>
+					{{/_disableBreadcrumb}}
+				</div>
+
+				<article data-uid="{{uid}}" id="main-article-anchor">
+					{{!body}}
+				</article>
+
+				{{^_disableContribution}}
+				<div class="contribution d-print-none">
+					{{#sourceurl}}
+					<a href="{{sourceurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
+					{{/sourceurl}}
+					{{^sourceurl}}{{#docurl}}
+					<a href="{{docurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
+					{{/docurl}}{{/sourceurl}}
+				</div>
+				{{/_disableContribution}}
+
+				{{^_disableNextArticle}}
+				<div class="next-article d-print-none" id="nextArticle"></div>
+				{{/_disableNextArticle}}
+
+			</div>
+		
+			{{^_disableAffix}}
+				<div class="affix">
+					<nav id="affix"></nav>
+				</div>
+				{{/_disableAffix}}
+		</main>
+	
+		{{>partials/footer}}
+	
+	</body>
+	{{/redirect_url}}
+</html>
