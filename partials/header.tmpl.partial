@@ -42,6 +42,7 @@
 				const iconObserver = new MutationObserver(editIconLinks);
 				iconObserver.observe(document.currentScript.previousElementSibling, { childList: true, subtree: true });
 				function editIconLinks(m) {
+					return;
 					for (const record of m) {
 						for (const node of record.addedNodes) {
 							if (node.nodeName !== "FORM" || !node.classList.contains("icons"))
