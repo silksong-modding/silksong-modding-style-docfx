@@ -37,7 +37,7 @@
 				{{/_enableSearch}}				
 			</div>
 				
-			{{!docfx modern's icon links do not have accessible text for screen readers, and the theme dropdown has incorrect aria roles. We adjust these with a MutationObserver script because docfx modern adds the content with a script that has a hard-coded html structure for it, which we can't make a template for.}}
+			{{!docfx modern's icon links do not have accessible text for screen readers, and the markup for many elements of the navbar has bad semantics that impacts accessibility. We adjust these with a MutationObserver script because docfx modern adds the content with a script that has a hard-coded html structure for it, so we can't make a template for that without replacing the entire script.}}
 			<script>
 			(function () {
 				let tasks = 2;
@@ -49,30 +49,52 @@
 						for (const node of record.addedNodes) {
 							if (node.nodeName === "FORM" && node.classList.contains("icons")) {
 								tasks--;
-								for (const iconLink of node.querySelectorAll("a[title]")) {
+								
+								// why on earth is this a form in the first place?
+								const ul = replaceElement(node, "ul");
+								
+								for (const iconLink of ul.querySelectorAll("a[title]")) {
 									const txt = document.createElement("span");
 									txt.className = "sr-only";
 									txt.innerText = iconLink.title;
 									iconLink.append(txt);
+									
+									if (!iconLink.hasAttribute("aria-expanded"))
+										wrapWithLi(iconLink);
 								}
 							
-								// we have to replace the theme button because it is a link pretending to be a button
-								// and this is causing issues with tab order and focus management.
+								// the theme "buttons" are links pretending to be buttons
+								// and they're causing issues with tab order and focus management.
 							
-								const dropdownBtn = replaceElement(node.querySelector("div.dropdown > a[aria-expanded]"), "button");							
-								const dropdownMenu = node.querySelector("div.dropdown > ul.dropdown-menu");
+								const dropdownBtn = replaceElement(ul.querySelector("div.dropdown > a[aria-expanded]"), "button");
+								wrapWithLi(dropdownBtn.parentNode);
+								
+								const dropdownMenuOld = ul.querySelector("div.dropdown > ul.dropdown-menu");
+								const dropdownMenu = dropdownMenuOld.cloneNode(true);
 							
 								dropdownMenu.id = "change-theme-menu";
 								dropdownBtn.setAttribute("aria-controls", dropdownMenu.id);
-							
-								// i *want* to replace the individual theme """"buttons"""" too, but apparently, doing that breaks everything!
-								// so we go the suboptimal aria role route instead,
-								// because my only other option is to delete and recreate the whole theme picker from scratch.
+								dropdownBtn.removeAttribute("href");
+
 								for (const a of dropdownMenu.querySelectorAll("a")) {
-									a.role = "button";
-									a.addEventListener("click", () => dropdownBtn.focus());
+									const btn = replaceElement(a, "button");
+									btn.removeAttribute("href");
+									const icon = btn.querySelector("i").classList[1].replace("bi-", "");
+									const theme = icon === "sun" ? "light" : icon === "moon" ? "dark" : "auto";
+									btn.addEventListener("click", () => setTheme(theme, icon));
 								}
 								
+								dropdownMenuOld.replaceWith(dropdownMenu);
+				
+								function setTheme(theme, icon) {
+									localStorage.setItem("theme", theme);
+									if (theme === "auto")
+										document.documentElement.dataset.bsTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+									else
+										document.documentElement.dataset.bsTheme = theme;
+									dropdownBtn.querySelector("i").classList = `bi bi-${icon}`;
+									dropdownBtn.focus();
+								}
 							}
 							else if (node.nodeName === "UL" && node.classList.contains("navbar-nav")) {
 								tasks--;
@@ -88,19 +110,23 @@
 							}
 						}
 					}
-					if (tasks <= 0) {
+					if (tasks <= 0)
 						observer.disconnect();
-					}
 				}
 				
 				function replaceElement(elt, tag) {
 					const newElt = document.createElement(tag);
-					[...elt.attributes].forEach( attr => { newElt.setAttribute(attr.nodeName, attr.nodeValue); console.log(`attr ${attr.nodeName} = ${attr.nodeValue}`); });
-					while (elt.childNodes.length > 0) {
+					[...elt.attributes].forEach(attr => newElt.setAttribute(attr.nodeName, attr.nodeValue));
+					while (elt.childNodes.length > 0)
 						newElt.append(elt.childNodes[0]);
-					}
 					elt.replaceWith(newElt);
 					return newElt;
+				}
+				
+				function wrapWithLi(elt) {
+					const li = document.createElement("li");
+					elt.replaceWith(li);
+					li.append(elt);
 				}
 			})();
 			</script>

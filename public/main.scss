@@ -281,6 +281,16 @@ body > header {
 			padding-block: calc(0.5 * var(--bs-navbar-padding-y)) var(--bs-navbar-padding-y);
 		}
 	}
+
+	.navbar .icons {
+		padding: 0;
+		margin: 0;
+		list-style: none;
+		display: flex;
+		flex-grow: 1;
+		justify-content: flex-end;
+		align-items: center;
+	}
 }
 [data-bs-theme="dark"] #logo {
 	filter: drop-shadow(0 0 2px rgba(var(--bs-body-color-rgb), 0.2))
