@@ -212,6 +212,10 @@ decorative fleurs they shouldn't have anything readable in them.
 	}
 }
 
+body *:focus, body *:focus-visible {
+	outline: 0.1rem solid var(--bs-body-color) !important;
+}
+
 .sr-only {
 	border: 0;
     padding: 0;
@@ -234,10 +238,11 @@ body > header {
 	#logo {
 		width: 3.2rem;
 		aspect-ratio: 1;
+		margin-block: var(--bs-navbar-padding-y);
 	}
 
 	.navbar {
-		padding: var(--bs-navbar-padding-y) calc(var(--bs-gutter-x) * .5);
+		padding-inline: calc(var(--bs-gutter-x) * .5);
 		background: var(--bs-tertiary-bg);
 	}
 
@@ -257,7 +262,7 @@ body > header {
 		display: block;
 		margin: 0;
 		text-align: center;
-		padding: 0;
+		padding: var(--bs-navbar-padding-y) 0;
 
 		&:hover {
 			color: rgb(var(--bs-link-color-rgb));
@@ -268,11 +273,12 @@ body > header {
 			border-image: linear-gradient(to right, rgba(0,0,0,0) 0%, var(--bs-body-color) 20%, var(--bs-body-color) 80%, rgba(0,0,0,0) 100%);
 			border-image-width: var(--bs-border-width) 0;
 			border-image-slice: 0 0 1;
+			padding-block: var(--bs-navbar-padding-y) calc(0.5 * var(--bs-navbar-padding-y));
 		}
 
 		+ .navbar-brand {
-			padding-top: 0.2rem;
 			margin-bottom: -0.1rem;
+			padding-block: calc(0.5 * var(--bs-navbar-padding-y)) var(--bs-navbar-padding-y);
 		}
 	}
 }
@@ -327,6 +333,17 @@ nav#affix {
 		content: "\2003";
 		background: no-repeat center/contain url("/public/images/fleur_bottom.svg");
 		min-height: 100%;
+	}
+}
+
+/* BREADCRUMB */
+
+nav#breadcrumb {
+	font-size: 0.88rem;
+	min-height: calc(1lh + 1rem);
+
+	ol.breadcrumb {
+		font-size: 0.88rem;
 	}
 }
 
@@ -440,6 +457,10 @@ a {
 .form-control {
 	background-color: var(--bs-secondary-bg);
 	border-radius: 0; 
+}
+
+.btn {
+	border-radius: 0;
 }
 
 /* SEARCH */

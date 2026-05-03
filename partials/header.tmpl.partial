@@ -37,23 +37,49 @@
 				{{/_enableSearch}}
 			</div>
 				
-			{{!docfx modern's icon links do not have accessible text for screen readers. We add some, specifically with a MutationObserver script because docfx modern adds the links with a script that has a hard-coded html structure for them, and we can't make a template for that.}}
-			<script>				
+			{{!docfx modern's icon links do not have accessible text for screen readers, and the theme dropdown has incorrect aria roles. We adjust these with a MutationObserver script because docfx modern adds the content with a script that has a hard-coded html structure for it, which we can't make a template for.}}
+			<script>
 				const iconObserver = new MutationObserver(editIconLinks);
 				iconObserver.observe(document.currentScript.previousElementSibling, { childList: true, subtree: true });
 				function editIconLinks(m) {
-					return;
 					for (const record of m) {
 						for (const node of record.addedNodes) {
 							if (node.nodeName !== "FORM" || !node.classList.contains("icons"))
 								continue;
 							iconObserver.disconnect();
-							for (const iconLink of node.querySelectorAll("a[title]")) {						
+							
+							for (const iconLink of node.querySelectorAll("a[title]")) {
 								const txt = document.createElement("span");
 								txt.className = "sr-only";
 								txt.innerText = iconLink.title;
 								iconLink.append(txt);
 							}
+							
+							// we have to replace the theme button because it is a link pretending to be a button
+							// and this is causing issues with tab order and focus management.
+							
+							const dropdownBtnOld = node.querySelector("div.dropdown > a[aria-expanded]");
+							const dropdownBtn = document.createElement("button");
+							[...dropdownBtnOld.attributes].forEach( attr => { dropdownBtn.setAttribute(attr.nodeName, attr.nodeValue) });
+							while (dropdownBtnOld.childNodes.length > 0) {
+								dropdownBtn.appendChild(dropdownBtnOld.childNodes[0]);
+							}
+							dropdownBtnOld.replaceWith(dropdownBtn);
+							
+							const dropdownMenu = node.querySelector("div.dropdown > ul.dropdown-menu");
+							
+							dropdownMenu.id = "change-theme-menu";
+							dropdownMenu.role = "menu";
+							
+							dropdownBtn.setAttribute("aria-controls", "change-theme-menu");
+							
+							for (const menuLi of dropdownMenu.querySelectorAll("li"))
+								menuLi.role = "presentation";
+							for (const menuA of dropdownMenu.querySelectorAll("a")) {
+								menuA.role = "menuitem";
+								menuA.addEventListener("click", () => { dropdownBtn.focus(); });
+							}
+														
 							return;
 						}
 					}
