@@ -1,6 +1,6 @@
 <header class="bg-body border-bottom">
 	{{^_disableNavbar}}
-	<nav id="autocollapse" class="navbar navbar-expand-md container-xxl flex-nowrap">
+	<nav id="autocollapse" aria-label="Main Navigation" class="navbar navbar-expand-md container-xxl flex-nowrap">
 		<div class="brand-container container-l d-flex flex-row">
 		
 			{{!Empty alt text because the image is purely decorative}}
@@ -34,56 +34,75 @@
 					<i class="bi bi-search"></i>
 					<input class="form-control" id="search-query" type="search" disabled placeholder="{{__global.search}}" autocomplete="off" aria-label="Search"/>
 				</form>
-				{{/_enableSearch}}
+				{{/_enableSearch}}				
 			</div>
 				
 			{{!docfx modern's icon links do not have accessible text for screen readers, and the theme dropdown has incorrect aria roles. We adjust these with a MutationObserver script because docfx modern adds the content with a script that has a hard-coded html structure for it, which we can't make a template for.}}
 			<script>
-				const iconObserver = new MutationObserver(editIconLinks);
-				iconObserver.observe(document.currentScript.previousElementSibling, { childList: true, subtree: true });
-				function editIconLinks(m) {
+			(function () {
+				let tasks = 2;
+				let counter = 0;
+				const observer = new MutationObserver(callback);
+				observer.observe(document.currentScript.previousElementSibling, { childList: true, subtree: true });
+				function callback(m) {
 					for (const record of m) {
 						for (const node of record.addedNodes) {
-							if (node.nodeName !== "FORM" || !node.classList.contains("icons"))
-								continue;
-							iconObserver.disconnect();
+							if (node.nodeName === "FORM" && node.classList.contains("icons")) {
+								tasks--;
+								for (const iconLink of node.querySelectorAll("a[title]")) {
+									const txt = document.createElement("span");
+									txt.className = "sr-only";
+									txt.innerText = iconLink.title;
+									iconLink.append(txt);
+								}
 							
-							for (const iconLink of node.querySelectorAll("a[title]")) {
-								const txt = document.createElement("span");
-								txt.className = "sr-only";
-								txt.innerText = iconLink.title;
-								iconLink.append(txt);
+								// we have to replace the theme button because it is a link pretending to be a button
+								// and this is causing issues with tab order and focus management.
+							
+								const dropdownBtn = replaceElement(node.querySelector("div.dropdown > a[aria-expanded]"), "button");							
+								const dropdownMenu = node.querySelector("div.dropdown > ul.dropdown-menu");
+							
+								dropdownMenu.id = "change-theme-menu";
+								dropdownBtn.setAttribute("aria-controls", dropdownMenu.id);
+							
+								// i *want* to replace the individual theme """"buttons"""" too, but apparently, doing that breaks everything!
+								// so we go the suboptimal aria role route instead,
+								// because my only other option is to delete and recreate the whole theme picker from scratch.
+								for (const a of dropdownMenu.querySelectorAll("a")) {
+									a.role = "button";
+									a.addEventListener("click", () => dropdownBtn.focus());
+								}
+								
 							}
-							
-							// we have to replace the theme button because it is a link pretending to be a button
-							// and this is causing issues with tab order and focus management.
-							
-							const dropdownBtnOld = node.querySelector("div.dropdown > a[aria-expanded]");
-							const dropdownBtn = document.createElement("button");
-							[...dropdownBtnOld.attributes].forEach( attr => { dropdownBtn.setAttribute(attr.nodeName, attr.nodeValue) });
-							while (dropdownBtnOld.childNodes.length > 0) {
-								dropdownBtn.appendChild(dropdownBtnOld.childNodes[0]);
+							else if (node.nodeName === "UL" && node.classList.contains("navbar-nav")) {
+								tasks--;
+								for (const item of node.querySelectorAll("li.dropdown")) {
+									const dropdownBtn = replaceElement(item.querySelector("a"), "button");
+									const dropdownMenu = item.querySelector("ul.dropdown-menu");
+									
+									dropdownMenu.id = `nav-link-dropdown-${counter++}`;
+									dropdownBtn.setAttribute("aria-controls", dropdownMenu.id);
+									dropdownBtn.removeAttribute("href");
+									dropdownBtn.removeAttribute("role");
+								}
 							}
-							dropdownBtnOld.replaceWith(dropdownBtn);
-							
-							const dropdownMenu = node.querySelector("div.dropdown > ul.dropdown-menu");
-							
-							dropdownMenu.id = "change-theme-menu";
-							dropdownMenu.role = "menu";
-							
-							dropdownBtn.setAttribute("aria-controls", "change-theme-menu");
-							
-							for (const menuLi of dropdownMenu.querySelectorAll("li"))
-								menuLi.role = "presentation";
-							for (const menuA of dropdownMenu.querySelectorAll("a")) {
-								menuA.role = "menuitem";
-								menuA.addEventListener("click", () => { dropdownBtn.focus(); });
-							}
-														
-							return;
 						}
 					}
+					if (tasks <= 0) {
+						observer.disconnect();
+					}
 				}
+				
+				function replaceElement(elt, tag) {
+					const newElt = document.createElement(tag);
+					[...elt.attributes].forEach( attr => { newElt.setAttribute(attr.nodeName, attr.nodeValue); console.log(`attr ${attr.nodeName} = ${attr.nodeValue}`); });
+					while (elt.childNodes.length > 0) {
+						newElt.append(elt.childNodes[0]);
+					}
+					elt.replaceWith(newElt);
+					return newElt;
+				}
+			})();
 			</script>
 				
 		</div>
