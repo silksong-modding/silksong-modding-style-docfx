@@ -65,26 +65,13 @@ export async function initNav() {
 	}
 				
 	async function setupThemePicker() {
-		const locChangeTheme = meta("loc:changeTheme"),
-			locLight = meta("loc:themeLight"),
-			locDark = meta("loc:themeDark"),
-			locAuto = meta("loc:themeAuto"),
-			defaultTheme = localStorage.getItem("theme") || (await mainJs).defaultTheme || "auto";
+		const defaultTheme = localStorage?.getItem("theme") || (await mainJs).defaultTheme || "auto";
 				
 		const themeMenuBtn = linksEl.querySelector(".nav-item-icon summary");
 		themeMenuBtn.querySelector("i").classList = `bi bi-${getIcon(defaultTheme)}`;
-		themeMenuBtn.querySelector("span").innerText = locChangeTheme;
-		themeMenuBtn.title = locChangeTheme;
 					
-		for (const btn of linksEl.querySelectorAll(".nav-item-icon button")) {
-			const theme = btn.dataset.theme;
-			btn.addEventListener("click", () => setTheme(theme));
-			btn.append(theme === "light" ? locLight : theme === "dark" ? locDark : locAuto);
-		}
-
-		function getIcon(theme) {
-			return theme === "light" ? "sun" : theme === "dark" ? "moon" : "circle-half";
-		}
+		for (const btn of linksEl.querySelectorAll(".nav-item-icon button"))
+			btn.addEventListener("click", () => setTheme(btn.dataset.theme));
 				
 		function setTheme(theme, icon) {
 			localStorage.setItem("theme", theme);
@@ -96,6 +83,10 @@ export async function initNav() {
 			themeMenuBtn.focus();
 			themeMenuBtn.click();
 		}
+
+		function getIcon(theme) {
+			return theme === "light" ? "sun" : theme === "dark" ? "moon" : "circle-half";
+		}
 	}
 }
 
@@ -104,13 +95,78 @@ export async function initToc() {
 		tocEl = document.body.querySelector("#toc-offcanvas ul"),
 		tocUrl = new URL(meta("docfx:tocrel").replace(/.html$/gi, ".json"), window.location.href),
 		disableTocFilter = meta("docfx:disabletocfilter") === "true";
+	
+	const
+		locSearchResults = meta("loc:searchResultsCount"),
+		locSearchNoResults = meta("loc:searchNoResults");
 
 	const { items, pdf, pdfFileName } = await fetch(tocUrl).then(x => x.json());
 
 	// TODO make the filtering work, figure out what's going on with the pdf options...
+	
+	const tocFilterUrl = disableTocFilter ? "" : (localStorage?.getItem("tocFilterUrl") || "");
 
 	const activeItem = findActiveItem(items, tocUrl);
 	tocEl.append(...buildNavTree(items, [], activeItem));
+	
+	if (!disableTocFilter) {
+		let tocFilter;
+		const filterEl = tocEl.parentElement.querySelector("search input"),
+			announceEl = tocEl.parentElement.querySelector("search div[aria-live]");
+		
+		filterEl.addEventListener("input", filterChanged);
+		filterEl.addEventListener("change", filterChanged);
+		
+		filterEl.value = localStorage?.getItem("tocFilter") || "";
+		filterEl.dispatchEvent(new Event("change"));
+	
+		function filterChanged() {
+			if (filterEl.value === tocFilter)
+				return;
+			tocFilter = filterEl.value;
+			localStorage?.setItem("tocFilter", filterEl.value);
+			
+			let count = 0;
+			
+			announceEl.classList.add("sr-only");
+			
+			for (const li of tocEl.querySelectorAll("li")) {
+				li.removeAttribute("style");
+				count++;
+			}
+			
+			if (tocFilter === "") {
+				announceEl.textContent = "";
+				return;
+			}
+			
+			const filterLower = tocFilter.toLowerCase();
+			
+			const treeWalker = document.createTreeWalker(
+				tocEl,
+				NodeFilter.SHOW_ELEMENT,
+				(node) =>
+					(
+						node.tagName === "LI"
+						&& !node.textContent.toLowerCase().includes(filterLower)
+						&& ![...node.querySelectorAll("li, a, summary")].some((child) => child.textContent.toLowerCase().includes(filterLower))
+					)
+					? NodeFilter.FILTER_ACCEPT
+					: NodeFilter.FILTER_SKIP,
+			);
+			while (treeWalker.nextNode()) {
+				treeWalker.currentNode.style.display = "none";
+				count--;
+			}
+			
+			announceEl.textContent =
+				((count > 0) ? locSearchResults.replace("{count}", count) : locSearchNoResults)
+				.replace("{query}", tocFilter);
+			
+			if (count <= 0)
+				announceEl.classList.remove("sr-only");
+		}
+	}
 }
 
 export async function initAffix() {

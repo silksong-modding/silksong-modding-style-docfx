@@ -31,33 +31,36 @@
 		<div class="collapse navbar-collapse" id="navpanel">
 			<div id="navbar-custom">
 				{{#_enableSearch}}
-				<search class="search" id="search" aria-label="Main Search">
+				<search role="search" id="search" aria-label="{{__global.search}}">
 					<i class="bi bi-search"></i>
-					<input class="form-control" id="search-query" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="Search"/>
+					<input class="form-control" id="search-query" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="{{__global.search}}"/>
 				</search>
 				{{/_enableSearch}}
 				<ul class="navbar-nav">
 					<div class="icons">
 						<li class="nav-item-icon">
 							<details>
-								<summary class="btn dropdown-toggle">
+								<summary class="btn dropdown-toggle" title="{{__global.changeTheme}}">
 									<i></i>
-									<span class="sr-only"></span>
+									<span class="sr-only">{{__global.changeTheme}}</span>
 								</summary>
 								<ul class="dropdown-menu dropdown-menu-end show">
 									<li>
 										<button class="nav-link dropdown-item" data-theme="light">
 											<i class="bi bi-sun"></i>
+											{{__global.themeLight}}
 										</button>
 									</li>
 									<li>
 										<button class="nav-link dropdown-item" data-theme="dark">
 											<i class="bi bi-moon"></i>
+											{{__global.themeDark}}
 										</button>
 									</li>
 									<li>
 										<button class="nav-link dropdown-item" data-theme="auto">
 											<i class="bi bi-circle-half"></i>
+											{{__global.themeAuto}}
 										</button>
 									</li>
 								</ul>
