@@ -12,23 +12,30 @@
 	{{^redirect_url}}
 	<body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
 
+		{{>partials/subtemplates}}
+
 		{{!skip-links are a recommended accessibility feature for screen reader and keyboard-navigating users.}}
-		<a id="skip-to-content" href="#main-article-anchor">skip to main content</a>
+		<a id="skip-link" href="#main-article-anchor">Skip to Main Content</a>
 	
 		{{>partials/header}}
-	
-		<main class="container-xxl">
+
+		<div class="content">
 			{{^_disableToc}}
 			{{>partials/toc}}
 			{{/_disableToc}}
 		
-			<div class="content">
+			{{^_disableAffix}}
+			{{>partials/affix}}
+			{{/_disableAffix}}
+	
+			<main class="container-xxl">
 				<div class="actionbar">
 					{{^_disableToc}}
 					<button class="btn btn-lg border-0 d-md-none"
-							type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas"
-							aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+							type="button" data-bs-toggle="offcanvas" data-bs-target="#toc-offcanvas"
+							aria-controls="toc-offcanvas" aria-expanded="false">
 						<i class="bi bi-list"></i>
+						<span class="sr-only">Show article directory</span>
 					</button>
 					{{/_disableToc}}
 
@@ -55,15 +62,8 @@
 				{{^_disableNextArticle}}
 				<div class="next-article d-print-none" id="nextArticle"></div>
 				{{/_disableNextArticle}}
-
-			</div>
-		
-			{{^_disableAffix}}
-				<div class="affix">
-					<nav id="affix"></nav>
-				</div>
-				{{/_disableAffix}}
-		</main>
+			</main>
+		</div>
 
 		<div class="container-xxl search-results" id="search-results"></div>
 	

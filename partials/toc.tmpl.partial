@@ -1,11 +1,16 @@
-<div class="toc-offcanvas">
-  <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
-    <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
-    </div>
-    <div class="offcanvas-body">
-    <nav class="toc" id="toc"></nav>
-    </div>
-  </div>
-</div>
+<nav class="offcanvas-md offcanvas-start" aria-labelledby="toc-offcanvas-label" id="toc-offcanvas">
+	<div class="offcanvas-header">
+		<h2 class="offcanvas-title" id="toc-offcanvas-label">Articles</h2>
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#toc-offcanvas" title="Close">
+			<span class="sr-only">Close</span>
+		</button>
+	</div>
+	{{^_disableTocFilter}}
+	<search aria-labelledby="toc-offcanvas-label" aria-label="Filter by title">
+		<i class="bi bi-filter"></i>
+		<input class="form-control" type="search" autocomplete="off" value="" placeholder="Filter by title" aria-label="Filter by title"/>
+	</search>
+	{{/_disableTocFilter}}
+	<ul></ul>
+</nav>
+<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initToc());</script>

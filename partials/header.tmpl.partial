@@ -1,6 +1,7 @@
-<header class="bg-body border-bottom">
-	{{^_disableNavbar}}
-	<nav id="autocollapse" aria-label="Main Navigation" class="navbar navbar-expand-md container-xxl flex-nowrap">
+{{^_disableNavbar}}
+<header class="border-bottom">
+
+	<nav id="autocollapse" aria-label="Main Navigation" class="navbar navbar-expand-md container-xxl">
 		<div class="brand-container container-l d-flex flex-row">
 		
 			{{!Empty alt text because the image is purely decorative}}
@@ -28,110 +29,46 @@
 			<i class="bi bi-three-dots"></i>
 		</button>
 		<div class="collapse navbar-collapse" id="navpanel">
-			<div id="navbar">
+			<div id="navbar-custom">
 				{{#_enableSearch}}
-				<form class="search" role="search" id="search">
+				<search class="search" id="search" aria-label="Main Search">
 					<i class="bi bi-search"></i>
-					<input class="form-control" id="search-query" type="search" disabled placeholder="{{__global.search}}" autocomplete="off" aria-label="Search"/>
-				</form>
-				{{/_enableSearch}}				
+					<input class="form-control" id="search-query" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="Search"/>
+				</search>
+				{{/_enableSearch}}
+				<ul class="navbar-nav">
+					<div class="icons">
+						<li class="nav-item-icon">
+							<details>
+								<summary class="btn dropdown-toggle">
+									<i></i>
+									<span class="sr-only"></span>
+								</summary>
+								<ul class="dropdown-menu dropdown-menu-end show">
+									<li>
+										<button class="nav-link dropdown-item" data-theme="light">
+											<i class="bi bi-sun"></i>
+										</button>
+									</li>
+									<li>
+										<button class="nav-link dropdown-item" data-theme="dark">
+											<i class="bi bi-moon"></i>
+										</button>
+									</li>
+									<li>
+										<button class="nav-link dropdown-item" data-theme="auto">
+											<i class="bi bi-circle-half"></i>
+										</button>
+									</li>
+								</ul>
+							</details>
+						</li>
+					</div>
+				</ul>
 			</div>
-				
-			{{!docfx modern's icon links do not have accessible text for screen readers, and the markup for many elements of the navbar has bad semantics that impacts accessibility. We adjust these with a MutationObserver script because docfx modern adds the content with a script that has a hard-coded html structure for it, so we can't make a template for that without replacing the entire script.}}
-			<script>
-			(function () {
-				let tasks = 2;
-				let counter = 0;
-				const observer = new MutationObserver(callback);
-				observer.observe(document.currentScript.previousElementSibling, { childList: true, subtree: true });
-				function callback(m) {
-					for (const record of m) {
-						for (const node of record.addedNodes) {
-							if (node.nodeName === "FORM" && node.classList.contains("icons")) {
-								tasks--;
-								
-								// why on earth is this a form in the first place?
-								const ul = replaceElement(node, "ul");
-								
-								for (const iconLink of ul.querySelectorAll("a[title]")) {
-									const txt = document.createElement("span");
-									txt.className = "sr-only";
-									txt.innerText = iconLink.title;
-									iconLink.append(txt);
-									
-									if (!iconLink.hasAttribute("aria-expanded"))
-										wrapWithLi(iconLink);
-								}
-							
-								// the theme "buttons" are links pretending to be buttons
-								// and they're causing issues with tab order and focus management.
-							
-								const dropdownBtn = replaceElement(ul.querySelector("div.dropdown > a[aria-expanded]"), "button");
-								wrapWithLi(dropdownBtn.parentNode);
-								
-								const dropdownMenuOld = ul.querySelector("div.dropdown > ul.dropdown-menu");
-								const dropdownMenu = dropdownMenuOld.cloneNode(true);
-							
-								dropdownMenu.id = "change-theme-menu";
-								dropdownBtn.setAttribute("aria-controls", dropdownMenu.id);
-								dropdownBtn.removeAttribute("href");
-
-								for (const a of dropdownMenu.querySelectorAll("a")) {
-									const btn = replaceElement(a, "button");
-									btn.removeAttribute("href");
-									const icon = btn.querySelector("i").classList[1].replace("bi-", "");
-									const theme = icon === "sun" ? "light" : icon === "moon" ? "dark" : "auto";
-									btn.addEventListener("click", () => setTheme(theme, icon));
-								}
-								
-								dropdownMenuOld.replaceWith(dropdownMenu);
-				
-								function setTheme(theme, icon) {
-									localStorage.setItem("theme", theme);
-									if (theme === "auto")
-										document.documentElement.dataset.bsTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-									else
-										document.documentElement.dataset.bsTheme = theme;
-									dropdownBtn.querySelector("i").classList = `bi bi-${icon}`;
-									dropdownBtn.focus();
-								}
-							}
-							else if (node.nodeName === "UL" && node.classList.contains("navbar-nav")) {
-								tasks--;
-								for (const item of node.querySelectorAll("li.dropdown")) {
-									const dropdownBtn = replaceElement(item.querySelector("a"), "button");
-									const dropdownMenu = item.querySelector("ul.dropdown-menu");
-									
-									dropdownMenu.id = `nav-link-dropdown-${counter++}`;
-									dropdownBtn.setAttribute("aria-controls", dropdownMenu.id);
-									dropdownBtn.removeAttribute("href");
-									dropdownBtn.removeAttribute("role");
-								}
-							}
-						}
-					}
-					if (tasks <= 0)
-						observer.disconnect();
-				}
-				
-				function replaceElement(elt, tag) {
-					const newElt = document.createElement(tag);
-					[...elt.attributes].forEach(attr => newElt.setAttribute(attr.nodeName, attr.nodeValue));
-					while (elt.childNodes.length > 0)
-						newElt.append(elt.childNodes[0]);
-					elt.replaceWith(newElt);
-					return newElt;
-				}
-				
-				function wrapWithLi(elt) {
-					const li = document.createElement("li");
-					elt.replaceWith(li);
-					li.append(elt);
-				}
-			})();
-			</script>
-				
 		</div>
 	</nav>
-	{{/_disableNavbar}}
+	<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initNav());</script>
+
 </header>
+{{/_disableNavbar}}

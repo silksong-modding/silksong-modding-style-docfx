@@ -1,0 +1,17 @@
+<template id="icon-link-tmpl">
+	<li class="nav-item-icon">
+		<a class="btn border-0">
+			<i class="bi"></i>
+			<span class="sr-only"></span>
+		</a>
+	</li>
+</template>
+
+<template id="subtree-tmpl">
+	<li>
+		<details>
+			<summary></summary>
+			<ul></ul>
+		</details>
+	</li>
+</template>
