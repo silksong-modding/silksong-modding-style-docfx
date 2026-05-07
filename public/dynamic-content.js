@@ -101,13 +101,16 @@ export async function initToc() {
 		locSearchNoResults = meta("loc:searchNoResults");
 
 	const { items, pdf, pdfFileName } = await fetch(tocUrl).then(x => x.json());
-
-	// TODO make the filtering work, figure out what's going on with the pdf options...
 	
-	const tocFilterUrl = disableTocFilter ? "" : (localStorage?.getItem("tocFilterUrl") || "");
-
 	const activeItem = findActiveItem(items, tocUrl);
 	tocEl.append(...buildNavTree(items, [], activeItem));
+	
+	if (pdf === true) {
+		const pdfLink = document.createElement("a");
+		pdfLink.href = new URL(pdfFileName || 'toc.pdf', tocUrl);
+		pdfLink.textContent = meta("loc:downloadPdf");
+		tocEl.parentElement.append(pdfLink);
+	}
 	
 	if (!disableTocFilter) {
 		let tocFilter;
@@ -167,6 +170,16 @@ export async function initToc() {
 				announceEl.classList.remove("sr-only");
 		}
 	}
+	
+	const active = tocEl.querySelector("a[aria-current]");
+	if (active instanceof HTMLElement) {
+		let current = active.closest("details");
+		while (current instanceof HTMLElement) {
+			current.setAttribute("open", true);
+			current = current.parentElement.closest("details");
+		}
+		active.scrollIntoView({ block: "start", container: "nearest" });
+	}
 }
 
 export async function initAffix() {
@@ -174,8 +187,6 @@ export async function initAffix() {
 		affixEl = document.body.querySelector("#affix-custom ul"),
 		headings = document.body.querySelectorAll("article h2, article h3"),
 		items = [];
-
-	console.log(headings);
 
 	if (headings.length <= 0)
 		return;
@@ -273,7 +284,7 @@ function buildNavTree(items, ul, activeItem) {
 	}
 
 	function buildLink(text, url, isCurrent) {
-		const a = document.createElement("a");
+		const a = document.createElement("a");		
 		a.href = url;
 		a.textContent = text;
 		if (isCurrent === true)

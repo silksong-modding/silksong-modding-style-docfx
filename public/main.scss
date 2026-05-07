@@ -385,6 +385,11 @@ body > .content {
 	max-width: 1768px;
 	flex: 1;
 
+	@media print {
+		padding: 0;
+		margin: 0;
+	}
+
 	main {
 		padding: 0;
 		flex: 1;
@@ -401,12 +406,18 @@ body > .content {
 		position: sticky;
 		top: calc(70px + 1.6rem);
 		margin-bottom: 1.6rem;
+		
+		@media print {
+			display: none;
+		}
 
 		@media(max-width:767.98px) {
 			padding: calc(var(--bs-gutter-x) * .5);
 			position: fixed;
 			top: 0;
+			height: 100vh;
 			max-height: 100vh;
+			margin: 0;
 			border-right: 1px solid var(--bs-body-color);
 		}
 
@@ -461,13 +472,17 @@ body > .content {
 			color: var(--bs-tertiary-color);
 		}
 
-		a {
+		ul a {
 			font-family: var(--bs-font-sans-serif);
-		}
-
-			a:not([aria-current]) {
+			
+			&:not(:hover) {
+				text-decoration: none;
+			}
+			
+			&:not([aria-current]) {
 				color: var(--bs-body-color);
 			}
+		}
 	}
 	/* TABLE OF CONTENTS (RIGHT) */
 	nav#affix-custom {
@@ -481,6 +496,10 @@ body > .content {
 		position: sticky;
 		top: calc(70px + 1.6rem);
 		margin-bottom: 1.6rem;
+		
+		@media print {
+			display: none;
+		}
 
 		@media only screen and (max-width: 1140px) {
 			display: none;
@@ -539,6 +558,10 @@ body > .content {
 nav#breadcrumb {
 	font-size: 0.88rem;
 	min-height: calc(1lh + 1rem);
+	
+	@media print {
+		min-height: 0;
+	}
 
 	ol.breadcrumb {
 		font-size: 0.88rem;
@@ -587,19 +610,21 @@ article {
 		margin-block: 0.5em;
 	}
 
-	ul {
-		list-style-type: none;
-		padding-left: 0.5em;
+	@media only screen {
+		ul {
+			list-style-type: none;
+			padding-left: 0.5em;
 
-		li {
-			text-indent: -1.5em;
-			margin-left: 1.5em;
-		}
-	
-		li:before {
-			content: "\2003";
-			background: no-repeat center/0.7em url("/public/images/bullet_point.svg");
-			margin-right: 0.5em;
+			li {
+				text-indent: -1.5em;
+				margin-left: 1.5em;
+			}
+		
+			li:before {
+				content: "\2003";
+				background: no-repeat center/0.7em url("/public/images/bullet_point.svg");
+				margin-right: 0.5em;
+			}
 		}
 	}
 
