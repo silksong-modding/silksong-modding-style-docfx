@@ -220,36 +220,34 @@ function findActiveItem(items, baseUrl) {
 		activeItem = undefined,
 		maxPrefixLength = 0;
 
-	for (const item of items.map(x => "items" in x ? x.items : x).flat()) {
+	for (const item of flatten(items)){
 		if (item.href === undefined)
 			continue;
 		item.href = new URL(item.href, baseUrl);
+		console.log(`external? ${externalUrl(item.href)} | url: ${item.href} | cur: ${url}`);
 		if (externalUrl(item.href))
 			continue;
-		const prefixLength = commonUrlPrefixLength(url, item.href);
-		if (prefixLength === maxPrefixLength)
-			activeItem = undefined;
-		else if (prefixLength > maxPrefixLength) {
-			maxPrefixLength = prefixLength;
-			activeItem = item;
+		
+		if (item.href.href === url.href) {
+			if (activeItem === undefined)
+				activeItem = item;
+			else {
+				activeItem = undefined;
+				break;
+			}
 		}
 	}
 
 	return activeItem;
-
-	function externalUrl(url) {
-		return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol;
-	}
-
-	function commonUrlPrefixLength(url, base) {
-		const
-			urlSegments = url.pathname.split('/'),
-			baseSegments = base.pathname.split('/');
-		let i = 0;
-		while (i < urlSegments.length && i < baseSegments.length && urlSegments[i] === baseSegments[i]) {
-			i++;
-		}
-		return i;
+	
+	function flatten(arr) {
+		return arr.flatMap((x) => {
+			const y =
+				("items" in x)
+				? [{ name: x.name, href: x.href }, ...flatten(x.items || [])]
+				: [x];
+			return [...y];
+		});
 	}
 }
 
@@ -283,12 +281,19 @@ function buildNavTree(items, ul, activeItem) {
 		return ("href" in item) ? buildLink(item.name, item.href, item === activeItem) : document.createTextNode(item.name);
 	}
 
-	function buildLink(text, url, isCurrent) {
-		const a = document.createElement("a");		
-		a.href = url;
+	function buildLink(text, href, isCurrent) {
+		const a = document.createElement("a");
+		const url = new URL(href, window.location.href);
 		a.textContent = text;
+		a.href = url;
+		if (externalUrl(url))
+			a.target = "_blank";
 		if (isCurrent === true)
 			a.setAttribute("aria-current", "page");
 		return a;
 	}
+}
+
+function externalUrl(url) {
+	return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol;
 }

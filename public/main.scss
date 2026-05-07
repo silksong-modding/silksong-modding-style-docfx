@@ -376,6 +376,10 @@ search {
 
 /* MAIN CONTENT */
 
+html {
+	scroll-padding-top: 6rem;
+}
+
 body > .content {
 	display: flex;
 	column-gap: 3rem;
@@ -393,6 +397,7 @@ body > .content {
 	main {
 		padding: 0;
 		flex: 1;
+		scroll-padding-block: 6rem;
 	}
 	/* TABLE OF CONTENTS (LEFT) */
 	nav#toc-offcanvas {
@@ -473,6 +478,7 @@ body > .content {
 		}
 
 		ul a {
+			scroll-margin-block: 6rem;
 			font-family: var(--bs-font-sans-serif);
 			
 			&:not(:hover) {
