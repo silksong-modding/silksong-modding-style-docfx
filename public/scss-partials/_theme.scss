@@ -1,0 +1,108 @@
+
+// Sets colours, in bootstrap variables and more succint scss variables, for light and dark mode.
+
+// || VARIABLES AND FUNCTIONS
+
+$c-primary: var(--bs-body-color);
+$c-secondary: var(--bs-secondary-color);
+$c-tertiary: var(--bs-tertiary-color);
+
+$c-bg-primary: var(--bs-body-bg);
+$c-bg-secondary: var(--bs-secondary-bg);
+$c-bg-tertiary: var(--bs-tertiary-bg);
+
+@function c-primary($opacity) {
+	@return rgba(var(--bs-body-color-rgb), $opacity);
+}
+@function c-secondary($opacity) {
+	@return rgba(var(--bs-secondary-color-rgb), $opacity);
+}
+@function c-tertiary($opacity) {
+	@return rgba(var(--bs-tertiary-color-rgb), $opacity);
+}
+
+@function c-bg-primary($opacity) {
+	@return rgba(var(--bs-body-bg-rgb), $opacity);
+}
+@function c-bg-secondary($opacity) {
+	@return rgba(var(--bs-secondary-bg-rgb), $opacity);
+}
+@function c-bg-tertiary($opacity) {
+	@return rgba(var(--bs-tertiary-bg-rgb), $opacity);
+}
+
+// || DARK MODE
+
+[data-bs-theme="dark"] {
+	--bs-body-color-rgb: 235,235,234;
+	--bs-secondary-color-rgb: 209,203,199;
+	--bs-tertiary-color-rgb: 183,179,177;
+
+	--bs-link-color-rgb: 255,159,104;
+	--bs-link-hover-color-rgb: 255,176,131;
+
+	--bs-body-bg-rgb: 46,35,32;
+	--bs-secondary-bg-rgb: 70,62,58;
+	--bs-tertiary-bg-rgb: 30,14,11;
+
+	--bs-info-bg-subtle:     #90caf915;
+	--bs-info-border-subtle: #90caf9;
+
+	--bs-warning-bg-subtle:     #fff59d15;
+	--bs-warning-border-subtle: #fff59d;
+
+	--bs-danger-bg-subtle:     #ef9a9a15;
+	--bs-danger-border-subtle: #ef9a9a;
+
+	code.hljs {
+		background: $c-bg-tertiary;
+	}
+
+	blockquote {
+		border-color: c-tertiary(.5);
+	}
+}
+
+// || LIGHT MODE
+
+[data-bs-theme="light"] {
+	--bs-body-color-rgb: 14,11,11;
+	--bs-secondary-color-rgb: 104,74,74;
+	--bs-tertiary-color-rgb: 113,91,91;
+
+	--bs-link-color-rgb: 168, 59, 0;
+	--bs-link-hover-color-rgb: 235,85,0;
+
+	--bs-body-bg-rgb: 238,231,233;
+	--bs-secondary-bg-rgb: 223,210,211;
+	--bs-tertiary-bg-rgb: 216,192,195;
+
+	--bs-info-bg-subtle:     #0054991a;
+	--bs-info-border-subtle: #005499;
+
+	--bs-warning-bg-subtle:     #fff59d47;
+	--bs-warning-border-subtle: #706500;
+
+	--bs-danger-bg-subtle:     #8415151a;
+	--bs-danger-border-subtle: #841515;
+
+	--bs-code-color: #be0e65;
+
+	code.hljs {
+		background: $c-bg-secondary;
+	}
+
+	.hljs-meta,
+	.hljs-attr {
+		color: #005f7a;
+	}
+
+	// Match header buttons to fleurs
+	.btn {
+		--bs-btn-color: #432923;
+	}
+
+	blockquote {
+		border-color: $c-bg-tertiary;
+	}
+}

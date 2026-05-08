@@ -1,0 +1,74 @@
+
+// Houses all reusable typography-related style definitions in the form
+// of @font-faces, mixins, and extendable placeholders.
+
+// || FONT FACES
+
+@font-face {
+	font-family: "TrajanPro";
+	src: local("Trajan Pro Regular"), local("TrajanPro-Regular"),
+		url("fonts/TrajanPro-Regular.woff2") format("woff2"),
+		url("fonts/TrajanPro-Regular.woff") format("woff"),
+		url("fonts/TrajanPro-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "TrajanPro";
+	src: local("Trajan Pro Bold"), local("TrajanPro-Bold"),
+		url("fonts/TrajanPro-Bold.woff2") format("woff2"),
+		url("fonts/TrajanPro-Bold.woff") format("woff"),
+		url("fonts/TrajanPro-Bold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "TrajanPro-Fallback";
+	src: local(Times New Roman);
+	font-display: swap;
+	font-feature-settings: "smcp" on, "cpsp" on;
+	size-adjust: 113%;
+	ascent-override: 75%;
+	descent-override: 29%;
+	line-gap-override: normal;
+}
+
+@font-face {
+	font-family: "Perpetua";
+	src: local("Perpetua"),
+		url("fonts/Perpetua.woff2") format("woff2"),
+		url("fonts/Perpetua.woff") format("woff"),
+		url("fonts/Perpetua.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+	font-display: swap;
+}
+@font-face {
+	font-family: "Perpetua-Fallback";
+	src: local(Times New Roman);
+	font-display: swap;
+	size-adjust: 91%;
+	ascent-override: 89%;
+	descent-override: 31%;
+	line-gap-override: normal;
+}
+
+// || STYLE DEFINITIONS
+
+%f-serif-header {
+	font-family: "TrajanPro", "TrajanPro-Fallback", "Times New Roman", Times, serif;
+	font-weight: normal;
+}
+
+%f-serif-body {
+	font-family: "Perpetua", "Perpetua-Fallback", "Times New Roman", Times, serif;
+	font-weight: normal;
+}
+
+$f-sans-body-stack: Lato, Roboto, Arial, sans-serif;
+
+%f-sans-body {
+	font-family: $f-sans-body-stack;
+}

@@ -220,11 +220,10 @@ function findActiveItem(items, baseUrl) {
 		activeItem = undefined,
 		maxPrefixLength = 0;
 
-	for (const item of flatten(items)){
+	for (const item of flatten(items)) {
 		if (item.href === undefined)
 			continue;
 		item.href = new URL(item.href, baseUrl);
-		console.log(`external? ${externalUrl(item.href)} | url: ${item.href} | cur: ${url}`);
 		if (externalUrl(item.href))
 			continue;
 		

@@ -1,0 +1,185 @@
+
+// Houses utilities - globally used classes, variables, functions, and mixins related to spacing and layout. Also various fixes/changes to DocFx's bootstrap variables.
+
+@use "sass:list";
+
+
+// || BOOTSRAP VARIABLE FIXES
+
+:root {
+	--bs-body-bg: rgb(var(--bs-body-bg-rgb));
+	--bs-secondary-bg: rgb(var(--bs-secondary-bg-rgb));
+	--bs-tertiary-bg: rgb(var(--bs-tertiary-bg-rgb));
+	--bs-border-color: var(--bs-body-color);
+
+	--bs-body-color: rgb(var(--bs-body-color-rgb));
+	--bs-secondary-color: rgb(var(--bs-secondary-color-rgb));
+	--bs-tertiary-color: rgb(var(--bs-tertiary-color-rgb));
+
+	--bs-secondary-rgb: var(--bs-secondary-color-rgb);
+	--bs-tertiary-rgb: var(--bs-tertiary-color-rgb);
+
+	&, .container, .container-fluid, .container-xxl {
+		--bs-gutter-x: 1.6rem;
+		--bs-navbar-padding-y: .5rem;
+	}
+}
+
+[data-bs-theme] {
+	.alert {
+		color: var(--bs-alert-border-color);
+	}
+
+	.link-secondary {
+		color: var(--bs-secondary-color) !important;
+	}
+}
+
+// || ACCESSIBILITY
+
+@mixin screen-reader-only {
+	// Hides an element visually, but not for screen readers.
+	clip: rect(0 0 0 0);
+	clip-path: inset(50%);
+	height: 1px;
+	overflow: hidden;
+	position: absolute;
+	white-space: nowrap;
+	width: 1px;
+}
+
+.sr-only {
+	@include screen-reader-only;
+}
+
+.skip-link {
+	font-family: var(--font-header-serif);
+	font-weight: 600;
+	background: #BF1722;
+	color: #fff;
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+	padding: 0.5em 1em;
+	margin: 0;
+	width: fit-content;
+	display: block;
+	position: absolute;
+	top: -3em;
+	left: 0;
+	z-index: 99999;
+	transition: top 0.5s ease-out;
+
+	&:focus {
+		position: absolute;
+		top: 0;
+		left: 0;
+		outline-color: transparent;
+		transition: top 0.05s ease-in;
+	}
+}
+
+// || SPACING
+
+@function gutter-x($mult) {
+	@if ($mult == 1) {
+		@return var(--bs-gutter-x);
+	}
+	@else {
+		@return calc($mult * var(--bs-gutter-x));
+	}
+}
+@function nav-padding-y($mult) {
+	@if ($mult == 1) {
+		@return var(--bs-navbar-padding-y);
+	}
+	@else {
+		@return calc($mult * var(--bs-navbar-padding-y));
+	}
+}
+
+@mixin sticky-sidebar {
+	position: sticky;
+	top: gutter-x(3.61);
+	max-height: calc(100vh - nav-padding-y(2) - gutter-x(4));
+	height: fit-content;
+}
+
+// || MEDIA QUERIES
+
+@mixin mobile-only {
+	@media (max-width: 767.98px) {
+		@content;
+	}
+}
+
+// || FLEURS
+
+@mixin -fleur-base {
+	content: "\2003";
+	[data-bs-theme="light"] & {
+		filter: brightness(0.15) sepia(1) hue-rotate(-40deg) saturate(2);
+	}
+}
+
+@mixin fleur-top($url, $height) {
+	&:before {
+		@include -fleur-base;
+		background: no-repeat center/contain url($url);
+		height: $height;
+		flex: $height 0 0;
+		font-size: 1px;
+	}
+}
+
+@mixin fleur-bottom($url, $height) {
+	&:after {
+		@include -fleur-base;
+		background: no-repeat center/contain url($url);
+		height: $height;
+		flex: $height 0 0;
+		font-size: 1px;
+	}
+}
+
+@mixin fleur-left($url, $height, $margin) {
+	&:before {
+		@include -fleur-base;
+		background: no-repeat center/contain url($url);
+		background-size: $height;
+		margin-right: $margin;
+	}
+}
+
+@mixin fleur-right($url, $height, $margin) {
+	&:after {
+		@include -fleur-base;
+		background: no-repeat center/$height url($url);
+		margin-left: $margin;
+	}
+}
+
+@mixin fleur-border($url, $slice, $width, $outset) {
+	&:before {
+		@include -fleur-base;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		border-image: url($url) list.slash($slice, $width, $outset);
+	}
+}
+
+// || BORDERS
+
+%border-bottom-fade-both {
+	border-image: linear-gradient(to right, rgba(0,0,0,0) 0%, var(--bs-body-color) 20%, var(--bs-body-color) 80%, rgba(0,0,0,0) 100%);
+	border-image-width: var(--bs-border-width) 0;
+	border-image-slice: 0 0 1;
+}
+
+%border-bottom-fade-right {
+	border-image: linear-gradient(to right, var(--bs-body-color) 0%,var(--bs-body-color) 50%, rgba(0,0,0,0) 100%);
+	border-image-width: var(--bs-border-width) 0;
+	border-image-slice: 0 0 1;
+}
