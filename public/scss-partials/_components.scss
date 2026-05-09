@@ -1,0 +1,134 @@
+
+// Styles for frequently used classes/tags/html structures that aren't constrained to one major landmark.
+
+@use "./typography" as *;
+@use "./utility" as *;
+@use "./theme" as *;
+
+
+// || LINKS
+
+a {
+	color: rgb(var(--bs-link-color-rgb));
+	transition: all ease 0.1s;
+	text-shadow: 0 0 0em c-primary(0);
+
+	[data-bs-theme="light"] &:hover {
+		text-shadow: 0 0 0.5em c-primary(.3);
+	}
+
+	[data-bs-theme="dark"] &:hover {
+		text-shadow: 0 0 0.5em c-primary(.5);
+	}
+}
+
+// || TABLES
+
+.table {
+	th {
+		@extend %f-serif-header;
+		background: $c-bg-tertiary;
+	}
+
+	[data-bs-theme="light"] & tr:nth-child(2n) td,
+	[data-bs-theme="dark"] & tr:nth-child(2n+1) td {
+		background: c-bg-secondary(.75);
+	}
+}
+
+// || LISTS
+
+article {
+	li {
+		margin-block: 0.5em;
+	}
+
+	ul {
+		list-style-type: none;
+		padding-left: 0.5em;
+
+		li {
+			text-indent: -1.5em;
+			margin-left: 1.5em;
+			@include fleur-left("/public/images/bullet_point.svg", .7em, .5em);
+		}
+	}
+
+	ol {
+		li::marker {
+			@extend %f-serif-body;
+			font-size: 1.3em;
+			line-height: 1;
+		}
+	}
+}
+
+// || ALERT BOXES
+
+.alert {
+	border-radius: 0;
+	@extend %f-serif-body;
+	font-size: calc(var(--bs-body-font-size) * 1.2);
+
+	@include fleur-border("/public/images/inventory_cursor.svg", 48, 1.8rem, .25rem);
+
+	> *:last-child {
+		margin-bottom: 0;
+	}
+
+	h5 {
+		text-transform: none;
+		font-size: 1.25rem;
+		&:before {
+			top: 0.15em;
+			font-size: 1em;
+		}
+	}
+
+	&.alert-warning h5:before {
+		top: 0.1em;
+	}
+}
+
+// || SEARCH BARS
+
+search {
+	position: relative;
+
+	i.bi {
+		position: absolute;
+		left: .8rem;
+		opacity: .5;
+		pointer-events: none;
+		height: 100%;
+		align-content: center;
+	}
+
+	i.bi + input {
+		padding-left: 2.5rem;
+	}
+
+	div[aria-live] {
+		position: absolute;
+	}
+
+	&:has(div[aria-live]:not(.sr-only)) {
+		margin-bottom: 1lh;
+	}
+}
+
+// || DETAILS/SUMMARY
+
+nav#toc-offcanvas, main {
+	summary {
+		display: block;
+		@extend %f-serif-header;
+
+		@include fleur-left("images/dropdown.svg", 1em, .2em) {
+			transform: rotate(-90deg);
+		}
+	}
+	details[open]>summary:before {
+		transform: rotate(0deg);
+	}
+}

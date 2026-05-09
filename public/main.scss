@@ -1,70 +1,14 @@
 ﻿
-// Styles for most major page landmarks and components.
+// Styles for the main content area, and a few global changes/resets
 
 @use "./scss-partials/typography" as *;
 @use "./scss-partials/utility" as *;
 @use "./scss-partials/theme" as *;
 
-// || LINKS
-
-a {
-	color: rgb(var(--bs-link-color-rgb));
-	transition: all ease 0.1s;
-	text-shadow: 0 0 0em c-primary(0);
-
-	[data-bs-theme="light"] &:hover {
-		text-shadow: 0 0 0.5em c-primary(.3);
-	}
-
-	[data-bs-theme="dark"] &:hover {
-		text-shadow: 0 0 0.5em c-primary(.5);
-	}
-}
-
-
-// || TABLES
-
-.table {
-	th {
-		@extend %f-serif-header;
-		background: $c-bg-tertiary;
-	}
-
-	[data-bs-theme="light"] & tr:nth-child(2n) td,
-	[data-bs-theme="dark"] & tr:nth-child(2n+1) td {
-		background: c-bg-secondary(.75);
-	}
-}
-
-
-// || LISTS
-
-article {
-	li {
-		margin-block: 0.5em;
-	}
-
-	@media only screen {
-		ul {
-			list-style-type: none;
-			padding-left: 0.5em;
-
-			li {
-				text-indent: -1.5em;
-				margin-left: 1.5em;
-				@include fleur-left("/public/images/bullet_point.svg", .7em, .5em);
-			}
-		}
-	}
-
-	ol {
-		li::marker {
-			@extend %f-serif-body;
-			font-size: 1.3em;
-			line-height: 1;
-		}
-	}
-}
+@use "./scss-partials/components";
+@use "./scss-partials/header";
+@use "./scss-partials/toc";
+@use "./scss-partials/affix";
 
 
 // || BREADCRUMB
@@ -72,286 +16,13 @@ article {
 nav#breadcrumb {
 	font-size: 0.88rem;
 	min-height: calc(1lh + 1rem);
-	
+
 	@media print {
 		min-height: 0;
 	}
 
 	ol.breadcrumb {
 		font-size: 0.88rem;
-	}
-}
-
-
-// || ALERT BOXES
-
-.alert {
-	border-radius: 0;
-	@extend %f-serif-body;
-	font-size: calc(var(--bs-body-font-size) * 1.2);
-
-	@include fleur-border("/public/images/inventory_cursor.svg", 48, 1.8rem, .25rem);
-
-	> *:last-child {
-		margin-bottom: 0;
-	}
-
-	h5 {
-		text-transform: none;
-		font-size: 1.25rem;
-		&:before {
-			top: 0.15em;
-			font-size: 1em;
-		}
-	}
-
-	&.alert-warning h5:before {
-		top: 0.1em;
-	}
-}
-
-
-// || HEADER/NAV
-
-#logo {
-	width: gutter-x(2);
-	aspect-ratio: 1;
-	margin-block: nav-padding-y(1);
-
-	[data-bs-theme="dark"] & {
-		filter: drop-shadow(0 0 2px c-primary(.2)) drop-shadow(0 0 6px c-primary(.2));
-	}
-}
-body > header {
-	height: fit-content;
-	background: $c-bg-tertiary;
-
-	.navbar {
-		padding-inline: gutter-x(.5);
-	}
-
-	.brand-container {
-		gap: gutter-x(.25);
-	}
-
-	.brand-links {
-		display: flex;
-		align-items: stretch;
-		justify-content: center;
-		flex-direction: column;
-		margin-right: var(--bs-navbar-brand-margin-end);
-	}
-
-	.icons {
-		display: flex;
-		justify-content: flex-end;
-		flex: 1;
-
-		@include mobile-only {
-			justify-content: flex-start;
-		}
-	}
-
-	.navbar .navbar-brand {
-		display: block;
-		margin: 0;
-		text-align: center;
-		padding: nav-padding-y(1) 0;
-
-		&:hover {
-			color: rgb(var(--bs-link-color-rgb));
-		}
-
-		&:has(+ .navbar-brand) {
-			@extend %border-bottom-fade-both;
-			padding-block: nav-padding-y(1) nav-padding-y(.5);
-			font-size: calc(0.7 * var(--bs-navbar-brand-font-size));
-		}
-
-		+ .navbar-brand {
-			margin-bottom: -0.1rem;
-			padding-block: nav-padding-y(.5) nav-padding-y(1);
-		}
-	}
-
-	#navbar-custom {
-		display: flex;
-		flex: 1;
-		justify-content: space-between;
-		align-items: center;
-		flex-direction: row-reverse;
-	}
-
-	.navbar-nav {
-		flex: 1;
-	}
-
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-
-		&.dropdown-menu-end {
-			right: 0;
-		}
-	}
-
-	details {
-		display: inline-block;
-		position: relative;
-	}
-
-	li {
-		align-content: center;
-	}
-
-	a[aria-current] {
-		color: var(--bs-link-nav-hover-color);
-	}
-
-	@include mobile-only {
-		#navbar-custom {
-			flex-direction: column-reverse;
-			padding-bottom: 1rem;
-			gap: 1rem;
-			align-items: stretch;
-		}
-
-		.navbar-nav {
-			gap: .5rem;
-		}
-
-		details {
-			display: block;
-		}
-	}
-}
-
-
-// || TABLE OF CONTENTS (LEFT)
-
-nav#toc-offcanvas {
-	flex: .35;
-	max-width: 360px;
-	display: flex;
-	flex-direction: column;
-	gap: 1rem;
-	@include sticky-sidebar;
-
-	@media print {
-		display: none;
-	}
-
-	@include mobile-only {
-		padding: gutter-x(.5);
-		position: fixed;
-		top: 0;
-		height: 100vh;
-		max-height: 100vh;
-		margin: 0;
-		border-right: 1px solid $c-primary;
-	}
-
-	@include fleur-top("images/fleur_top.svg", 2rem);
-	@include fleur-bottom("images/fleur_bottom.svg", 1rem);
-
-	.offcanvas-header {
-		padding: 0;
-	}
-
-	span.name-only {
-		margin: .6rem 0 0;
-	}
-
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	> ul {
-		overflow-y: auto;
-		flex-basis: min-content;
-		flex-grow: 1;
-		flex-shrink: 1;
-	}
-
-	summary + ul, li + li {
-		margin-top: .6rem;
-	}
-
-	summary {
-		margin-left: -1rem;
-	}
-
-	li {
-		padding-left: 1rem;
-		font-size: .88rem;
-		@extend %f-serif-header;
-		color: var(--bs-tertiary-color);
-	}
-
-	ul a {
-		scroll-margin-block: 6rem;
-		@extend %f-sans-body;
-
-		&:not(:hover) {
-			text-decoration: none;
-		}
-
-		&:not([aria-current]) {
-			color: var(--bs-body-color);
-		}
-	}
-}
-
-
-// || TABLE OF CONTENTS (RIGHT)
-
-nav#affix-custom {
-	border: 0;
-	display: flex;
-	flex-direction: column;
-	width: 14.4rem;
-	gap: 1rem;
-	order: 1;
-	@include sticky-sidebar;
-
-	@media print {
-		display: none;
-	}
-
-	@media (max-width: 1140px) {
-		display: none;
-	}
-
-	&:not(:has(li)) {
-		display: none;
-	}
-
-	@include fleur-top("images/fleur_top.svg", 2rem);
-	@include fleur-bottom("images/fleur_bottom.svg", 1rem);
-
-	h2 {
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-		font-size: .88rem;
-		padding: 0 0 .5em;
-		margin: 0;
-	}
-
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
-
-	li + li {
-		margin-top: .4rem;
-	}
-
-	a:not(:hover) {
-		text-decoration: none;
 	}
 }
 
@@ -377,33 +48,8 @@ body > .content {
 	}
 }
 
+// || SEARCH RESULTS
 
-// || SEARCH BARS AND RESULTS
-
-search {
-	position: relative;
-
-	i.bi {
-		position: absolute;
-		left: .8rem;
-		opacity: .5;
-		pointer-events: none;
-		height: 100%;
-		align-content: center;
-	}
-
-	i.bi + input {
-		padding-left: 2.5rem;
-	}
-	
-	div[aria-live] {
-		position: absolute;
-	}
-	
-	&:has(div[aria-live]:not(.sr-only)) {
-		margin-bottom: 1lh;
-	}
-}
 #search-results {
 	padding-inline: gutter-x(1);
 
@@ -433,13 +79,11 @@ search {
 	}
 }
 
-
 // || FOOTER
 
 footer {
 	background: $c-bg-tertiary;
 }
-
 
 // || MISC
 

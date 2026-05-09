@@ -112,6 +112,12 @@
 	}
 }
 
+@mixin desktop-only {
+	@media (min-width: 768px) {
+		@content;
+	}
+}
+
 // || FLEURS
 
 @mixin -fleur-base {
@@ -141,32 +147,38 @@
 	}
 }
 
-@mixin fleur-left($url, $height, $margin) {
+@mixin fleur-left($url, $width, $margin) {
 	&:before {
 		@include -fleur-base;
 		background: no-repeat center/contain url($url);
-		background-size: $height;
+		display: inline-block;
+		width: $width;
 		margin-right: $margin;
+		@content;
 	}
 }
 
-@mixin fleur-right($url, $height, $margin) {
+@mixin fleur-right($url, $width, $margin) {
 	&:after {
 		@include -fleur-base;
-		background: no-repeat center/$height url($url);
+		background: no-repeat center/contain url($url);
+		display: inline-block;
+		width: $width;
 		margin-left: $margin;
+		@content;
 	}
 }
 
 @mixin fleur-border($url, $slice, $width, $outset) {
 	&:before {
 		@include -fleur-base;
+		border-image: url($url) list.slash($slice, $width, $outset);
+		pointer-events: none;
 		position: absolute;
 		top: 0;
 		bottom: 0;
 		left: 0;
 		right: 0;
-		border-image: url($url) list.slash($slice, $width, $outset);
 	}
 }
 

@@ -1,0 +1,53 @@
+
+// Styles for the right sidebar/table of contents.
+
+@use "./typography" as *;
+@use "./utility" as *;
+@use "./theme" as *;
+
+nav#affix-custom {
+	border: 0;
+	display: flex;
+	flex-direction: column;
+	width: 14.4rem;
+	gap: 1rem;
+	order: 1;
+	@include sticky-sidebar;
+
+	@media print {
+		display: none;
+	}
+
+	@media (max-width: 1140px) {
+		display: none;
+	}
+
+	&:not(:has(li)) {
+		display: none;
+	}
+
+	@include fleur-top("images/fleur_top.svg", 2rem);
+	@include fleur-bottom("images/fleur_bottom.svg", 1rem);
+
+	h2 {
+		letter-spacing: 0.05em;
+		text-transform: uppercase;
+		font-size: .88rem;
+		padding: 0 0 .5em;
+		margin: 0;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	li + li {
+		margin-top: .4rem;
+	}
+
+	a:not(:hover) {
+		text-decoration: none;
+	}
+}

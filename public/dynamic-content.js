@@ -9,11 +9,10 @@ export async function initNav() {
 		mainJs = import("./main.js").then(m => m.default),
 		navbarEl = document.body.querySelector("#navbar-custom"),
 		linksEl = navbarEl.querySelector("ul.navbar-nav");
-	
+
 	setupThemePicker();
 	const [navLinks, iconLinks] = await Promise.all([buildNavLinks(), buildIconLinks()]);
-	linksEl.prepend(...navLinks);
-	linksEl.querySelector(".icons").prepend(...iconLinks);
+	linksEl.prepend(...navLinks, ...iconLinks);
 
 	async function buildNavLinks() {
 		const
@@ -28,20 +27,19 @@ export async function initNav() {
 		const links = buildNavTree(items, [], activeItem);
 
 		for (const link of links) {
-			link.classList = "nav-item";
-			for (const x of link.querySelectorAll("a"))
-				x.classList = "nav-link";
-			for (const x of link.querySelectorAll("summary"))
-				x.classList = "nav-link dropdown-toggle";
-			for (const x of link.querySelectorAll("ul"))
-				x.classList = "dropdown-menu show";
-			for (const x of link.querySelectorAll("ul a, ul summary"))
-				x.classList.add("dropdown-item");
-		}
+			link.classList = "nav-item nav-link";
 
+			const ul = link.querySelector("ul");
+			if (ul instanceof HTMLElement) {
+				ul.classList = "dropdown-menu show";
+				addAutoCloseEvent(ul.closest("details"));
+				for (const x of ul.querySelectorAll("li"))
+					x.classList = "nav-item nav-link dropdown-item";
+			}
+		}
 		return links;
 	}
-				
+
 	async function buildIconLinks() {
 		const iconLinkTmpl = document.body.querySelector("#icon-link-tmpl");
 
@@ -63,16 +61,17 @@ export async function initNav() {
 
 		return iconChildren;
 	}
-				
+
 	async function setupThemePicker() {
 		const defaultTheme = localStorage?.getItem("theme") || (await mainJs).defaultTheme || "auto";
-				
+
 		const themeMenuBtn = linksEl.querySelector(".nav-item-icon summary");
 		themeMenuBtn.querySelector("i").classList = `bi bi-${getIcon(defaultTheme)}`;
-					
+		addAutoCloseEvent(themeMenuBtn.closest("details"));
+
 		for (const btn of linksEl.querySelectorAll(".nav-item-icon button"))
 			btn.addEventListener("click", () => setTheme(btn.dataset.theme));
-				
+
 		function setTheme(theme, icon) {
 			localStorage.setItem("theme", theme);
 			if (theme === "auto")
@@ -88,6 +87,13 @@ export async function initNav() {
 			return theme === "light" ? "sun" : theme === "dark" ? "moon" : "circle-half";
 		}
 	}
+
+	function addAutoCloseEvent(details) {
+		details.addEventListener("focusout", e => {
+			if (details.open && !details.contains(e.relatedTarget))
+				details.querySelector("summary")?.click();
+		});
+	}
 }
 
 export async function initToc() {
@@ -95,56 +101,56 @@ export async function initToc() {
 		tocEl = document.body.querySelector("#toc-offcanvas ul"),
 		tocUrl = new URL(meta("docfx:tocrel").replace(/.html$/gi, ".json"), window.location.href),
 		disableTocFilter = meta("docfx:disabletocfilter") === "true";
-	
+
 	const
 		locSearchResults = meta("loc:searchResultsCount"),
 		locSearchNoResults = meta("loc:searchNoResults");
 
 	const { items, pdf, pdfFileName } = await fetch(tocUrl).then(x => x.json());
-	
+
 	const activeItem = findActiveItem(items, tocUrl);
 	tocEl.append(...buildNavTree(items, [], activeItem));
-	
+
 	if (pdf === true) {
 		const pdfLink = document.createElement("a");
 		pdfLink.href = new URL(pdfFileName || 'toc.pdf', tocUrl);
 		pdfLink.textContent = meta("loc:downloadPdf");
 		tocEl.parentElement.append(pdfLink);
 	}
-	
+
 	if (!disableTocFilter) {
 		let tocFilter;
 		const filterEl = tocEl.parentElement.querySelector("search input"),
 			announceEl = tocEl.parentElement.querySelector("search div[aria-live]");
-		
+
 		filterEl.addEventListener("input", filterChanged);
 		filterEl.addEventListener("change", filterChanged);
-		
+
 		filterEl.value = localStorage?.getItem("tocFilter") || "";
 		filterEl.dispatchEvent(new Event("change"));
-	
+
 		function filterChanged() {
 			if (filterEl.value === tocFilter)
 				return;
 			tocFilter = filterEl.value;
 			localStorage?.setItem("tocFilter", filterEl.value);
-			
+
 			let count = 0;
-			
+
 			announceEl.classList.add("sr-only");
-			
+
 			for (const li of tocEl.querySelectorAll("li")) {
 				li.removeAttribute("style");
 				count++;
 			}
-			
+
 			if (tocFilter === "") {
 				announceEl.textContent = "";
 				return;
 			}
-			
+
 			const filterLower = tocFilter.toLowerCase();
-			
+
 			const treeWalker = document.createTreeWalker(
 				tocEl,
 				NodeFilter.SHOW_ELEMENT,
@@ -161,16 +167,16 @@ export async function initToc() {
 				treeWalker.currentNode.style.display = "none";
 				count--;
 			}
-			
+
 			announceEl.textContent =
 				((count > 0) ? locSearchResults.replace("{count}", count) : locSearchNoResults)
 				.replace("{query}", tocFilter);
-			
+
 			if (count <= 0)
 				announceEl.classList.remove("sr-only");
 		}
 	}
-	
+
 	const active = tocEl.querySelector("a[aria-current]");
 	if (active instanceof HTMLElement) {
 		let current = active.closest("details");
@@ -226,7 +232,7 @@ function findActiveItem(items, baseUrl) {
 		item.href = new URL(item.href, baseUrl);
 		if (externalUrl(item.href))
 			continue;
-		
+
 		if (item.href.href === url.href) {
 			if (activeItem === undefined)
 				activeItem = item;
@@ -238,7 +244,7 @@ function findActiveItem(items, baseUrl) {
 	}
 
 	return activeItem;
-	
+
 	function flatten(arr) {
 		return arr.flatMap((x) => {
 			const y =
@@ -261,7 +267,9 @@ function buildNavTree(items, ul, activeItem) {
 				summary = li.querySelector("summary"),
 				subUl = li.querySelector("ul");
 
-			summary.append(buildItem(item));
+			if ("href" in item)
+				console.error("The label for a navigation dropdown may not contain a link.", item);
+			summary.append(document.createTextNode(item.name));
 			buildNavTree(item.items, subUl, activeItem);
 		}
 		else {

@@ -1,0 +1,149 @@
+
+// Styles for the site's header and main navigation bar.
+
+@use "./typography" as *;
+@use "./utility" as *;
+@use "./theme" as *;
+
+// || LOGO AND TITLE LINKS
+
+#logo {
+	width: gutter-x(2);
+	aspect-ratio: 1;
+	margin-block: nav-padding-y(1);
+
+	[data-bs-theme="dark"] & {
+		filter: drop-shadow(0 0 2px c-primary(.2)) drop-shadow(0 0 6px c-primary(.2));
+	}
+}
+
+.brand-container {
+	gap: gutter-x(.25);
+}
+
+.brand-links {
+	display: flex;
+	align-items: stretch;
+	justify-content: center;
+	flex-direction: column;
+	margin-right: var(--bs-navbar-brand-margin-end);
+
+	.navbar-brand {
+		display: block;
+		margin: 0;
+		text-align: center;
+		padding: nav-padding-y(1) 0;
+
+		&:hover {
+			color: rgb(var(--bs-link-color-rgb));
+		}
+
+		&:has(+ .navbar-brand) {
+			@extend %border-bottom-fade-both;
+			padding-block: nav-padding-y(1) nav-padding-y(.5);
+			font-size: calc(0.7 * var(--bs-navbar-brand-font-size));
+		}
+
+		+ .navbar-brand {
+			margin-bottom: -0.1rem;
+			padding-block: nav-padding-y(.5) nav-padding-y(1);
+		}
+	}
+}
+
+// || NAV BAR
+
+body > header {
+	height: fit-content;
+	background: $c-bg-tertiary;
+}
+
+#navbar-custom {
+	display: flex;
+	flex: 1;
+	justify-content: space-between;
+	align-items: center;
+	flex-direction: row-reverse;
+
+	.dropdown-item {
+		padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
+	}
+}
+
+.nav-item {
+	@include mobile-only {
+		flex: 100% 1 0;
+	}
+}
+
+.nav-item-icon:first-child, li:not(.nav-item-icon) +.nav-item-icon {
+	flex: fit-content 0 1;
+	@include desktop-only {
+		flex: fit-content 1 0;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+}
+
+.navbar {
+	padding-inline: gutter-x(.5);
+
+	.navbar-nav {
+		flex: min-content 1 0;
+		flex-direction: row;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+
+		&.dropdown-menu-end {
+			right: 0;
+		}
+	}
+
+	details {
+		display: inline-block;
+		position: relative;
+	}
+
+	summary {
+		display: inline-block;
+		@include fleur-right("images/dropdown.svg", .8em, .2em);
+	}
+
+	li {
+		align-content: center;
+	}
+
+	a {
+		&, &:hover {
+			text-decoration: inherit;
+			color: inherit;
+		}
+
+		&[aria-current] {
+			color: var(--bs-link-nav-hover-color);
+		}
+	}
+
+	@include mobile-only {
+		#navbar-custom {
+			flex-direction: column-reverse;
+			padding-bottom: 1rem;
+			gap: 1rem;
+			align-items: stretch;
+		}
+
+		.navbar-nav {
+			gap: .5rem;
+			flex-wrap: wrap;
+		}
+
+		details {
+			display: block;
+		}
+	}
+}
