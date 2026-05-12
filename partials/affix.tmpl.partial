@@ -2,4 +2,4 @@
 	<h2 id="affix-title" class="border-bottom">{{__global.inThisArticle}}</h2>
 	<ul></ul>
 </nav>
-<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initAffix());</script>
+<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initAffix());</script>

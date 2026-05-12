@@ -15,7 +15,7 @@
 		{{!Preloading should help the navigational links appear a little quicker.}}
 		<link rel="preload" href="{{_rel}}toc.json" as="fetch" type="application/json" crossorigin/>
 		<link rel="preload" href="{{_rel}}articles/toc.json" as="fetch" type="application/json" crossorigin/>
-		<link rel="modulepreload" href="{{_rel}}public/dynamic-content.js"/>
+		<link rel="modulepreload" href="{{_rel}}public/dynamic-content.min.js"/>
 
 		<link rel="preload" href="{{_rel}}public/images/fleur_top.svg" as="image" type="image/svg+xml"/>
 		<link rel="preload" href="{{_rel}}public/images/fleur_bottom.svg" as="image" type="image/svg+xml"/>

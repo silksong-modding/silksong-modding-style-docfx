@@ -6,4 +6,4 @@
 		<ul></ul>
 	</nav>
 </div>
-<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initSearch());</script>
+<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initSearch());</script>

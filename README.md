@@ -8,6 +8,7 @@ A custom docfx theme for the [Silksong Modding Docs](https://docs.silksong-moddi
 
 - [Docfx](https://dotnet.github.io/docfx/)
 - [Sass](https://sass-lang.com/install/)
+- [UglifyJS](https://github.com/mishoo/UglifyJS)
 
 ### Setting Up Your Local Repositories
 
@@ -25,12 +26,16 @@ I would recommend making a new article in the parent repository's docs that incl
 
 ### Making Changes
 
-Edits to the theme's styling are done in `main.scss`.
+To edit the theme's...
+- **DocFx Config:** edit `main.js` and `common-pre-transform.js`.
+- **Styles:** edit `public/main.scss` and files in the `public/scss-partials/` directory.
+- **JavaScript:** edit `public/dynamic-content.js`.
+- **HTML:** edit `layout/_master.tmpl` and files in the `partials/` directory.
 
-Edits to DocFx configuration are done in `main.js` and `common-pre-transform.js`.
+To build the styles/javascript after editing them, from the `docs/silksong-modding-style-docfx/public` folder, run the commands:
+- **Styles:** `sass main.scss:main.css --style compressed`
+- **JavaScript:** `uglifyjs -c -m --module --source-map "url='dynamic-content.min.js.map'" -o "./dynamic-content.min.js" -- "./dynamic-content.js"`
 
 With your terminal in the `docs/silksong-modding-style-docfx` subfolder, you can:
-
-* Run `sass public/main.scss:public/main.css --watch --style compressed` to watch the stylesheet for changes and compile it to css when it's saved.
-* Run `docfx ../docfx.json --serve` to build and locally preview the parent repository's website, so you can see what you're doing.
-* Use `git` to fetch/pull/push from your fork of the docs theme repository.
+- Run `docfx ../docfx.json --serve` to build and locally preview the parent repository's website, so you can see what you're doing.
+- Use `git` to fetch/pull/push from your fork of the docs theme repository.

@@ -71,7 +71,7 @@
 			</div>
 		</div>
 	</nav>
-	<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initNav());</script>
+	<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initNav());</script>
 
 </header>
 {{/_disableNavbar}}

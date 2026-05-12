@@ -15,4 +15,4 @@
 	{{/_disableTocFilter}}
 	<ul></ul>
 </nav>
-<script>import("./{{_rel}}public/dynamic-content.js").then(m => m.initToc());</script>
+<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initToc());</script>
