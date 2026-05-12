@@ -20,11 +20,10 @@ export async function initNav() {
 			dropdownTmpl = document.body.querySelector("#nav-item-dropdown-tmpl");
 
 		const
-			navUrl = new URL(meta("docfx:navrel").replace(/.html$/gi, '.json'), window.location.href),
+			navUrl = new URL(meta("docfx:navrel").replace(/.html$/gi, ".json"), window.location.href),
 			items = (await (await fetch(navUrl)).json()).items;
 
-		const activeItem = findActiveItem(items, navUrl);
-		const links = buildNavTree(items, [], activeItem);
+		const links = buildNavTree(items, [], navUrl);
 
 		for (const link of links) {
 			link.classList = "nav-item nav-link";
@@ -41,23 +40,33 @@ export async function initNav() {
 	}
 
 	async function buildIconLinks() {
-		const iconLinkTmpl = document.body.querySelector("#icon-link-tmpl");
-
 		const
 			iconLinks = (await mainJs).iconLinks,
 			iconChildren = [];
 
 		for (const link of iconLinks) {
-			const el = document.importNode(iconLinkTmpl.content, true),
-				a = el.querySelector("a");
+			const li = cloneTemplate("icon-link-tmpl", "li"),
+				a = li.querySelector("a"),
+				title = document.createTextNode(link.title).textContent;
 
-			a.title = link.title;
-			a.href = link.href;
-			el.querySelector("i").classList.add(`bi-${link.icon}`);
-			el.querySelector("span").innerText = link.title;
+			a.title = title;
+			a.href = new URL(link.href);
+			li.querySelector("i").classList.add(`bi-${link.icon}`);
+			li.querySelector("span").textContent = title;
 
-			iconChildren.push(el);
+			iconChildren.push(li);
 		}
+
+		// fallback for if bootstrap's icon font doesn't load; replace icons with visible text
+		onFontsLoaded(fonts => {
+			if (fonts.findIndex(x => x.family === "bootstrap-icons") !== -1)
+				return;
+			for(const li of iconChildren) {
+				li.classList.add("nav-item", "nav-link");
+				li.querySelector("a").removeAttribute("class");
+				li.querySelector(".sr-only").removeAttribute("class");
+			}
+		});
 
 		return iconChildren;
 	}
@@ -72,7 +81,15 @@ export async function initNav() {
 		for (const btn of linksEl.querySelectorAll(".nav-item-icon button"))
 			btn.addEventListener("click", () => setTheme(btn.dataset.theme));
 
-		function setTheme(theme, icon) {
+		// fallback for if bootstrap's icon font doesn't load; replace dropdown icon with visible text
+		onFontsLoaded(fonts => {
+			if (fonts.findIndex(x => x.family === "bootstrap-icons") !== -1)
+				return;
+			themeMenuBtn.closest("li").classList.add("nav-item", "nav-link");
+			themeMenuBtn.querySelector(".sr-only").removeAttribute("class");
+		});
+
+		function setTheme(theme) {
 			localStorage.setItem("theme", theme);
 			if (theme === "auto")
 				document.documentElement.dataset.bsTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
@@ -91,7 +108,7 @@ export async function initNav() {
 	function addAutoCloseEvent(details) {
 		details.addEventListener("focusout", e => {
 			if (details.open && !details.contains(e.relatedTarget))
-				details.querySelector("summary")?.click();
+				details.removeAttribute("open");
 		});
 	}
 }
@@ -103,18 +120,17 @@ export async function initToc() {
 		disableTocFilter = meta("docfx:disabletocfilter") === "true";
 
 	const
-		locSearchResults = meta("loc:searchResultsCount"),
-		locSearchNoResults = meta("loc:searchNoResults");
+		locSearchResults = loc("searchResultsCount"),
+		locSearchNoResults = loc("searchNoResults");
 
 	const { items, pdf, pdfFileName } = await fetch(tocUrl).then(x => x.json());
 
-	const activeItem = findActiveItem(items, tocUrl);
-	tocEl.append(...buildNavTree(items, [], activeItem));
+	tocEl.append(...buildNavTree(items, [], tocUrl));
 
 	if (pdf === true) {
 		const pdfLink = document.createElement("a");
-		pdfLink.href = new URL(pdfFileName || 'toc.pdf', tocUrl);
-		pdfLink.textContent = meta("loc:downloadPdf");
+		pdfLink.href = new URL(pdfFileName || "toc.pdf", tocUrl);
+		pdfLink.textContent = loc("downloadPdf");
 		tocEl.parentElement.append(pdfLink);
 	}
 
@@ -189,6 +205,8 @@ export async function initToc() {
 }
 
 export async function initAffix() {
+	await DOMReady();
+
 	const
 		affixEl = document.body.querySelector("#affix-custom ul"),
 		headings = document.body.querySelectorAll("article h2, article h3"),
@@ -211,6 +229,154 @@ export async function initAffix() {
 	affixEl.append(...items);
 }
 
+export async function initSearch() {
+	const
+		searchForm = document.querySelector("#search form"),
+		searchBar = searchForm.querySelector("input"),
+		searchBtn = searchForm.querySelector("button");
+
+	if (!searchBar)
+		return;
+	if (!window.Worker) {
+		searchBar.style.display = "none";
+		return;
+	}
+
+	const
+		skipLink = document.querySelector(".skip-link"),
+		skipLinkOrigHref = skipLink.href;
+
+	const
+		containerEl = document.querySelector("#search-results-container"),
+		countEl = containerEl.querySelector(".search-list"),
+		resultsEl = containerEl.querySelector("div"),
+		paginateEl = containerEl.querySelector("nav ul");
+
+	let query = "";
+
+	const relHref = meta("docfx:rel") || "";
+	const worker = new Worker(new URL(`${relHref}./public/search-worker.min.js`, window.location.href), { type: "module" });
+
+	worker.onerror = event => console.error("Error occurred in search-worker:", event);
+
+	worker.onmessage = event => {
+		switch(event.data.e) {
+			case "index-ready":
+				searchBar.disabled = searchBtn.disabled = false;
+				searchBar.addEventListener("input", onQuerySubmit);
+				searchForm.addEventListener("submit", (e) => {
+					e.preventDefault();
+					if (query !== "")
+						location.replace("#" + containerEl.id);
+				});
+				window.docfx.searchReady = true;
+				break;
+			case "query-ready":
+				if (searchBar.value === "")
+					document.body.removeAttribute("data-search");
+				else {
+					document.body.setAttribute("data-search", "true");
+					displayPage(event.data.d, 0);
+				}
+				window.docfx.searchResultReady = true;
+				break;
+		}
+	};
+
+	const { lunrLanguages } = await import("./main.js").then(m => m.default);
+	worker.postMessage({ init: { lunrLanguages } });
+
+	function onQuerySubmit() {
+		query = searchBar.value;
+		if (query === "") {
+			skipLink.href = skipLinkOrigHref;
+			document.body.removeAttribute("data-search");
+		}
+		else {
+			skipLink.href = `#${containerEl.id}`;
+			worker.postMessage({ q: query.replace(/\s+/g, " ").split(" ").map(w => "+" + w).join(" ") });
+		}
+	}
+
+	function displayPage(hits, page) {
+		const
+			perPage = parseInt(meta("docfx:searchResultsPerPage")) || 10,
+			pages = Math.ceil(hits.length / perPage),
+			start = page * perPage;
+
+		// reset search content
+
+		resultsEl.textContent = paginateEl.textContent = "";
+		paginateEl.parentElement.style.display = "none";
+
+		if (hits.length <= 0) {
+			countEl.textContent = loc("searchNoResults", { query });
+			return;
+		}
+		else
+			countEl.textContent = loc("searchResultsCount", { query, count: hits.length }) + ` - Page ${page + 1} of ${pages}`;
+
+		// display results
+
+		const ul = document.createElement("ul");
+		for (let i = start; i < start + perPage; i++) {
+			if (i >= hits.length)
+				break;
+			const li = cloneTemplate("search-hit-tmpl", "li");
+
+			const title = li.querySelector(".item-title");
+			title.href = new URL(hits[i].href, window.location.href);
+			title.append(document.createTextNode(hits[i].title));
+
+			const url = li.querySelector(".item-href");
+			url.href = title.href;
+			url.append(document.createTextNode(title.href));
+
+			li.querySelector(".item-brief").append(extractContentBrief(hits[i].summary));
+
+			ul.append(li);
+		}
+		resultsEl.append(ul);
+
+		// display pagination
+
+		if (pages > 1) {
+			const
+				numLinks = parseInt(meta("docfx:searchNumPaginationLinks")) || 5,
+				half = Math.floor(numLinks / 2),
+				pStart = Math.max(0, Math.min(page - half, pages - numLinks)),
+				pEnd = Math.min(pages, pStart + numLinks);
+
+			for (let i = pStart; i < pEnd; i++) {
+				let li;
+				if (i === page)
+					li = cloneTemplate("search-pagination-active-tmpl", "li");
+				else {
+					li = cloneTemplate("search-pagination-tmpl", "li");
+					const cur = i;
+					li.querySelector("a").addEventListener("click", e => displayPage(hits, cur));
+				}
+				li.querySelector("a").textContent = i+1;
+				paginateEl.append(li);
+			}
+			paginateEl.parentElement.removeAttribute("style");
+		}
+	}
+
+	function extractContentBrief(content) {
+		const
+			briefOffset = 512,
+			words = query.split(/\s+/g),
+			queryIndex = content.indexOf(words[0]);
+
+		const text = (queryIndex > briefOffset)
+			? "..." + content.slice(queryIndex - briefOffset, queryIndex + briefOffset) + "..."
+			: content.slice(0, queryIndex + briefOffset) + "...";
+
+		return document.createTextNode(text);
+	}
+}
+
 /*
 UTILS
 */
@@ -219,62 +385,62 @@ function meta(name) {
 	return document.head.querySelector(`meta[name="${name}"]`)?.content;
 }
 
-function findActiveItem(items, baseUrl) {
-	const
-		url = new URL(window.location.href);
-	let
-		activeItem = undefined,
-		maxPrefixLength = 0;
-
-	for (const item of flatten(items)) {
-		if (item.href === undefined)
-			continue;
-		item.href = new URL(item.href, baseUrl);
-		if (externalUrl(item.href))
-			continue;
-
-		if (item.href.href === url.href) {
-			if (activeItem === undefined)
-				activeItem = item;
-			else {
-				activeItem = undefined;
-				break;
-			}
+function loc(name, args) {
+	let result = meta(`loc:${name}`) || "";
+	if (args) {
+		for (const key in args) {
+			result = result.replace(`{${key}}`, args[key]);
 		}
 	}
-
-	return activeItem;
-
-	function flatten(arr) {
-		return arr.flatMap((x) => {
-			const y =
-				("items" in x)
-				? [{ name: x.name, href: x.href }, ...flatten(x.items || [])]
-				: [x];
-			return [...y];
-		});
-	}
+	return result;
 }
 
-function buildNavTree(items, ul, activeItem) {
+const templates = {};
+function cloneTemplate(id, selector) {
+	if (id in templates === false)
+		templates[id] = document.getElementById(id);
+	return document.importNode(templates[id].content, true).querySelector(selector);
+}
+
+function buildNavTree(items, ul, baseUrl) {
+	const currentUrl = new URL(window.location.href);
+	baseUrl = new URL(baseUrl, window.location.href);
 	ul = ul || [];
 
 	for(const item of items) {
+		const nameNode = document.createTextNode(item.name);
 		let li;
 		if ("items" in item) {
-			li = document.importNode(document.body.querySelector("#subtree-tmpl").content, true).querySelector("li");
+			li = cloneTemplate("subtree-tmpl", "li");
 			const
 				summary = li.querySelector("summary"),
 				subUl = li.querySelector("ul");
 
 			if ("href" in item)
 				console.error("The label for a navigation dropdown may not contain a link.", item);
-			summary.append(document.createTextNode(item.name));
-			buildNavTree(item.items, subUl, activeItem);
+			summary.append(nameNode);
+			buildNavTree(item.items, subUl, baseUrl);
 		}
 		else {
 			li = document.createElement("li");
-			li.append(buildItem(item));
+			if ("href" in item) {
+				const
+					url = new URL(item.href, baseUrl),
+					a = document.createElement("a");
+
+				a.append(nameNode);
+				a.href = url;
+				if (externalUrl(url)) {
+					a.target = "_blank";
+					a.classList.add("external");
+				}
+				else if (sameUrl(url, currentUrl))
+					a.setAttribute("aria-current", "page");
+
+				li.append(a);
+			}
+			else
+				li.append(nameNode);
 		}
 
 		if (ul instanceof HTMLElement)
@@ -283,24 +449,34 @@ function buildNavTree(items, ul, activeItem) {
 			ul.push(li);
 	}
 	return ul;
+}
 
-	function buildItem(item) {
-		return ("href" in item) ? buildLink(item.name, item.href, item === activeItem) : document.createTextNode(item.name);
-	}
-
-	function buildLink(text, href, isCurrent) {
-		const a = document.createElement("a");
-		const url = new URL(href, window.location.href);
-		a.textContent = text;
-		a.href = url;
-		if (externalUrl(url))
-			a.target = "_blank";
-		if (isCurrent === true)
-			a.setAttribute("aria-current", "page");
-		return a;
-	}
+function sameUrl(url1, url2) {
+	return url1.host === url2.host && (
+		url1.pathname === url2.pathname
+		|| (
+			(url1.pathname === "/" || url1.pathname === "/index.html")
+			&& (url2.pathname === "/" || url2.pathname === "/index.html")
+		)
+	);
 }
 
 function externalUrl(url) {
 	return url.hostname !== window.location.hostname || url.protocol !== window.location.protocol;
+}
+
+function DOMReady() {
+	return new Promise(function (resolve) {
+		if (document.readyState != "loading")
+			return resolve();
+		else
+			document.addEventListener("DOMContentLoaded", function () {
+				return resolve();
+			});
+	});
+}
+
+async function onFontsLoaded(callback) {
+	const fonts = Array.from((await document.fonts).values());
+	callback(fonts);
 }

@@ -63,7 +63,6 @@ body > header {
 	flex: 1;
 	justify-content: space-between;
 	align-items: center;
-	flex-direction: row-reverse;
 
 	.dropdown-item {
 		padding: var(--bs-dropdown-item-padding-y) var(--bs-dropdown-item-padding-x);
@@ -125,7 +124,7 @@ body > header {
 		}
 
 		&[aria-current] {
-			color: var(--bs-link-nav-hover-color);
+			color: var(--bs-navbar-hover-color);
 		}
 	}
 

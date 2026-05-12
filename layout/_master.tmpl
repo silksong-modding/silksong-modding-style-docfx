@@ -1,4 +1,4 @@
-{{!Largely copied from docfx modern and docfx default, but separated into a few partials and provided with a few missing accessibility features.}}
+{{!Based off of docfx modern and docfx default, but separated into a partials and restructured for improved accessibility.}}
 
 {{!include(/^public/.*/)}}
 {{!include(favicon.ico)}}
@@ -8,26 +8,27 @@
 <html {{#_lang}}lang="{{_lang}}"{{/_lang}}{{^_lang}}lang="en"{{/_lang}}>
 
 	{{>partials/head}}
-	
+
 	{{^redirect_url}}
 	<body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
 
-		{{>partials/subtemplates}}
-
 		{{!skip-links are a recommended accessibility feature for screen reader and keyboard-navigating users.}}
 		<a class="skip-link" href="#main-article-anchor">Skip to Main Content</a>
-	
+
+		{{>partials/subtemplates}}
+
 		{{>partials/header}}
 
 		<div class="content">
 			{{^_disableToc}}
 			{{>partials/toc}}
 			{{/_disableToc}}
-		
+
+			{{!the "in this article" section is more useful if it can be navigated prior to the actual article content}}
 			{{^_disableAffix}}
 			{{>partials/affix}}
 			{{/_disableAffix}}
-	
+
 			<main class="container-xxl">
 				<div class="actionbar">
 					{{^_disableToc}}
@@ -44,6 +45,10 @@
 					<nav id="breadcrumb"></nav>
 					{{/_disableBreadcrumb}}
 				</div>
+
+				{{#_enableSearch}}
+				{{>partials/searchresults}}
+				{{/_enableSearch}}
 
 				<article data-uid="{{uid}}" id="main-article-anchor">
 					{{!body}}
@@ -66,10 +71,8 @@
 			</main>
 		</div>
 
-		<div class="container-xxl search-results" id="search-results"></div>
-	
 		{{>partials/footer}}
-	
+
 	</body>
 	{{/redirect_url}}
 </html>

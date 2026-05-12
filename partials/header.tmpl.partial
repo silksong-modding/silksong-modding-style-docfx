@@ -1,7 +1,7 @@
 {{^_disableNavbar}}
 <header class="border-bottom">
 
-	<nav id="autocollapse" aria-label="Main Navigation" class="navbar navbar-expand-md container-xxl">
+	<nav id="autocollapse" aria-label="Main" class="navbar navbar-expand-md container-xxl">
 		<div class="brand-container container-l d-flex flex-row">
 
 			{{!Empty alt text because the image is purely decorative}}
@@ -28,12 +28,6 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navpanel">
 			<div id="navbar-custom">
-				{{#_enableSearch}}
-				<search role="search" id="search" aria-label="{{__global.search}}">
-					<i class="bi bi-search"></i>
-					<input class="form-control" id="search-query" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="{{__global.search}}"/>
-				</search>
-				{{/_enableSearch}}
 				<ul class="navbar-nav">
 					<li class="nav-item-icon">
 						<details>
@@ -64,6 +58,16 @@
 						</details>
 					</li>
 				</ul>
+				{{#_enableSearch}}
+				<search role="search" id="search">
+					<form>
+						<input disabled class="form-control" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="{{__global.search}}"/>
+						<button disabled type="submit" class="bi bi-search" title="Submit">
+							<span class="sr-only">Submit</span>
+						</button>
+					</form>
+				</search>
+				{{/_enableSearch}}
 			</div>
 		</div>
 	</nav>

@@ -43,14 +43,16 @@ article {
 		margin-block: 0.5em;
 	}
 
-	ul {
-		list-style-type: none;
-		padding-left: 0.5em;
+	@media screen {
+		ul {
+			list-style-type: none;
+			padding-left: 0.5em;
 
-		li {
-			text-indent: -1.5em;
-			margin-left: 1.5em;
-			@include fleur-left("/public/images/bullet_point.svg", .7em, .5em);
+			li {
+				text-indent: -1.5em;
+				margin-left: 1.5em;
+				@include fleur-left("/public/images/bullet_point.svg", .7em, .5em);
+			}
 		}
 	}
 
@@ -70,7 +72,7 @@ article {
 	@extend %f-serif-body;
 	font-size: calc(var(--bs-body-font-size) * 1.2);
 
-	@include fleur-border("/public/images/inventory_cursor.svg", 48, 1.8rem, .25rem);
+	@include fleur-border("/public/images/inventory_cursor.svg", 50%, 1.8rem, .25rem);
 
 	> *:last-child {
 		margin-bottom: 0;
@@ -95,8 +97,9 @@ article {
 search {
 	position: relative;
 
-	i.bi {
+	.bi {
 		position: absolute;
+		top: 0;
 		left: .8rem;
 		opacity: .5;
 		pointer-events: none;
@@ -104,7 +107,15 @@ search {
 		align-content: center;
 	}
 
-	i.bi + input {
+	button.bi {
+		pointer-events: unset;
+		border: none;
+		background: none;
+		padding-inline: .6rem;
+		left: .2rem;
+	}
+
+	&:has(.bi) input {
 		padding-left: 2.5rem;
 	}
 
@@ -121,14 +132,18 @@ search {
 
 nav#toc-offcanvas, main {
 	summary {
-		display: block;
 		@extend %f-serif-header;
-
-		@include fleur-left("images/dropdown.svg", 1em, .2em) {
-			transform: rotate(-90deg);
-		}
 	}
-	details[open]>summary:before {
-		transform: rotate(0deg);
+
+	@media screen {
+		summary {
+			display: block;
+			@include fleur-left("images/dropdown.svg", 1em, .2em) {
+				transform: rotate(-90deg);
+			}
+		}
+		details[open]>summary:before {
+			transform: rotate(0deg);
+		}
 	}
 }

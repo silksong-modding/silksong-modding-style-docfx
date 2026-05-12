@@ -170,6 +170,7 @@
 }
 
 @mixin fleur-border($url, $slice, $width, $outset) {
+	position: relative;
 	&:before {
 		@include -fleur-base;
 		border-image: url($url) list.slash($slice, $width, $outset);
