@@ -1,0 +1,79 @@
+
+// Styles for the left sidebar/table of contents.
+
+@use "./typography" as *;
+@use "./utility" as *;
+@use "./theme" as *;
+
+nav#toc-offcanvas {
+	flex: .35;
+	max-width: 360px;
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+	@include sticky-sidebar;
+
+	@media print {
+		display: none;
+	}
+
+	@include mobile-only {
+		padding: gutter-x(.5);
+		position: fixed;
+		top: 0;
+		height: 100vh;
+		max-height: 100vh;
+		margin: 0;
+		border-right: 1px solid $c-primary;
+	}
+
+	@include fleur-top("images/fleur_top.svg", 2rem);
+	@include fleur-bottom("images/fleur_bottom.svg", 1rem);
+
+	.offcanvas-header {
+		padding: 0;
+	}
+
+	span.name-only {
+		margin: .6rem 0 0;
+	}
+
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+	}
+
+	> ul {
+		overflow-y: auto;
+		flex: min-content 1 1;
+	}
+
+	summary + ul, li + li {
+		margin-top: .6rem;
+	}
+
+	summary {
+		margin-left: -1.2rem;
+	}
+
+	li {
+		padding-left: 1.2rem;
+		font-size: 1rem;
+		@extend %f-serif-header;
+		color: var(--bs-tertiary-color);
+	}
+
+	ul a {
+		scroll-margin-block: 6rem;
+		@extend %f-sans-body;
+
+		&:not(:hover) {
+			text-decoration: none;
+		}
+
+		&:not([aria-current]) {
+			color: var(--bs-body-color);
+		}
+	}
+}
