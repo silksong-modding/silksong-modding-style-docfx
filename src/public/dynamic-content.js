@@ -477,6 +477,6 @@ function DOMReady() {
 }
 
 async function onFontsLoaded(callback) {
-	const fonts = Array.from((await document.fonts).values());
+	const fonts = Array.from(await document.fonts);
 	callback(fonts);
 }

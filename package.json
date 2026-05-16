@@ -1,0 +1,16 @@
+{
+  "name": "silksong-modding-style-docfx",
+  "description": "DocFx theme for silksong-modding org repositories.",
+  "private": true,
+  "license": "MIT",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "node build.js",
+    "test": "node build.js --test && docfx ./test-mod/docs/docfx.json --serve"
+  },
+  "devDependencies": {
+    "sass": "^1.99.0",
+    "uglify-js": "^3.19.3"
+  }
+}
