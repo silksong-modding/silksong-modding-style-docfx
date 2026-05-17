@@ -24,12 +24,12 @@
       }
     ],
     "output": "_site",
-    "template": ["default", "modern", "silksong-modding-style-docfx"],
+    "template": ["default", "modern", "silksong-modding"],
     "globalMetadata": {
       "_appName": "TestMod",
       "_appTitle": "TestMod",
       "_enableSearch": true,
-      "pdf": false
+      "pdf": true
     }
   }
 }

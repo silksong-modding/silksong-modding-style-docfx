@@ -7,7 +7,7 @@ A custom docfx theme for the [Silksong Modding Docs](https://docs.silksong-moddi
 ### Prerequisites
 
 - [Docfx](https://dotnet.github.io/docfx/)
-- [Node.js](https://nodejs.org/en)
+- [Node.js](https://nodejs.org/en). It's recommended to install Node with a version manager, such as [nvm](https://github.com/nvm-sh/nvm#intro) or [mise](https://mise.jdx.dev/getting-started.html).
 - Familiarity with [Sass](https://sass-lang.com/install/)
 
 ### Setting Up Your Local Repository
@@ -16,7 +16,7 @@ A custom docfx theme for the [Silksong Modding Docs](https://docs.silksong-moddi
 1. From within your local copy, run the command `npm install` to install dependencies.
 1. Make your edits to the files in the `src` directory, then run the command `npm run test` to build and locally preview the theme.
 
-Files built by `npm run test` go to the `test-mod/docs/silksong-modding-style-docfx` subdirectory.
+Files built by `npm run test` go to the `test-mod/docs/silksong-modding` subdirectory.
 
 ### Making Changes
 

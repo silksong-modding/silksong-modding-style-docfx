@@ -1,15 +1,7 @@
-using BepInEx;
-
 namespace TestMod;
 
-[BepInAutoPlugin(id: "io.github.testmod")]
-public partial class TestModPlugin : BaseUnityPlugin
+public class TestModPlugin
 {
-    private void Awake()
-    {
-        Logger.LogInfo($"Plugin {Name} ({Id}) has loaded!");
-    }
-
     /// <summary>
     /// A property for testing purposes.
     /// </summary>
@@ -20,4 +12,14 @@ public partial class TestModPlugin : BaseUnityPlugin
     /// </summary>
     /// <param name="number">Some parameter that does something.</param>
     public static void TestFunc(int number) {}
+
+    /// <summary>
+    /// A nested class of some kind.
+    /// </summary>
+    public class NestedClass {
+        /// <summary>
+        /// A field for testing purposes.
+        /// </summary>
+        public int testField = 2;
+    }
 }
