@@ -11,12 +11,10 @@
 
 	{{!For expandable dropdowns/trees of links which don't need javascript to expand/contract.}}
 	<template id="subtree-tmpl">
-		<li>
-			<details>
-				<summary></summary>
-				<ul></ul>
-			</details>
-		</li>
+		<li><details>
+			<summary></summary>
+			<ul></ul>
+		</details></li>
 	</template>
 
 	{{!A search result with better semantics.}}

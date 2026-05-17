@@ -5,6 +5,7 @@
   items:
     - href: test1.md
     - name: Doubly Nested Stuff
+      href: test2.md
       items:
         - href: test3.md
         - href: test4.md

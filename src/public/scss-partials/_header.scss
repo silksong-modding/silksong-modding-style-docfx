@@ -73,6 +73,11 @@ body > header {
 	@include mobile-only {
 		flex: 100% 1 0;
 	}
+
+	a {
+		display: inline-block;
+		min-height: 24px;
+	}
 }
 
 .nav-item-icon:first-child, li:not(.nav-item-icon) +.nav-item-icon {
@@ -85,12 +90,43 @@ body > header {
 	}
 }
 
+@mixin -nondropdown-link-beside-details {
+	a:has(+ details) {
+		display: block;
+		margin-bottom: -1lh;
+		margin-right: 1em;
+		position: absolute;
+		z-index: 1;
+	}
+	details {
+		display: block;
+	}
+	summary {
+		display: flex;
+		justify-content: space-between;
+
+		> .sr-only {
+			position: unset;
+		}
+	}
+}
+
 .navbar {
 	padding-inline: gutter-x(.5);
 
 	.navbar-nav {
 		flex: min-content 1 0;
 		flex-direction: row;
+
+		& > li:has(> a + details) {
+			position: relative;
+		}
+		& > li > a + details {
+			position: unset;
+			& > ul {
+				left: 0;
+			}
+		}
 	}
 
 	ul {
@@ -98,6 +134,10 @@ body > header {
 		padding: 0;
 		margin: 0;
 
+		&.dropdown-menu {
+			top: 100%;
+			@include -nondropdown-link-beside-details();
+		}
 		&.dropdown-menu-end {
 			right: 0;
 		}
@@ -110,17 +150,27 @@ body > header {
 
 	summary {
 		display: inline-block;
-		@include fleur-right("images/dropdown.svg", .8em, .2em);
+
+		@include fleur-right("images/dropdown.svg", 0, 0) {
+			display: inline-block;
+			background-position: center right;
+			background-size: .8em;
+			width: 1.2em;
+		};
 	}
 
 	li {
 		align-content: center;
+		position: relative;
 	}
 
 	a {
-		&, &:hover {
-			text-decoration: inherit;
-			color: inherit;
+		text-decoration: inherit;
+		color: inherit;
+
+		&:hover {
+			text-decoration: underline;
+			// color: inherit;
 		}
 
 		&[aria-current] {
@@ -139,6 +189,10 @@ body > header {
 		.navbar-nav {
 			gap: .5rem;
 			flex-wrap: wrap;
+		}
+
+		ul {
+			@include -nondropdown-link-beside-details();
 		}
 
 		details {
