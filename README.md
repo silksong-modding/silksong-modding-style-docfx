@@ -7,7 +7,8 @@ A custom docfx theme for the [Silksong Modding Docs](https://docs.silksong-moddi
 ### Prerequisites
 
 - [Docfx](https://dotnet.github.io/docfx/)
-- [Node.js](https://nodejs.org/en). It's recommended to install Node with a version manager, such as [nvm](https://github.com/nvm-sh/nvm#intro) or [mise](https://mise.jdx.dev/getting-started.html).
+- [Node.js](https://nodejs.org/en), v22.18.0 or later.
+	- It's recommended to install Node with a version manager, such as [nvm](https://github.com/nvm-sh/nvm#intro) or [mise](https://mise.jdx.dev/getting-started.html).
 - Familiarity with [Sass](https://sass-lang.com/install/)
 
 ### Setting Up Your Local Repository
