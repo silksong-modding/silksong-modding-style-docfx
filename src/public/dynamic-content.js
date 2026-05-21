@@ -416,29 +416,21 @@ function buildNavTree(items, ul, baseUrl) {
 				summary = li.querySelector("summary"),
 				subUl = li.querySelector("ul");
 
-			if ("href" in item)
-				console.error("The label for a navigation dropdown may not contain a link.", item);
-			summary.append(nameNode);
+			if ("href" in item) {
+				li.prepend(buildLink(nameNode, item.href));
+				const srSummary = document.createElement("span");
+				srSummary.classList = "sr-only";
+				srSummary.append(document.createTextNode(`Expand ${item.name}`));
+				summary.append(srSummary);
+			}
+			else
+				summary.append(nameNode);
 			buildNavTree(item.items, subUl, baseUrl);
 		}
 		else {
 			li = document.createElement("li");
-			if ("href" in item) {
-				const
-					url = new URL(item.href, baseUrl),
-					a = document.createElement("a");
-
-				a.append(nameNode);
-				a.href = url;
-				if (externalUrl(url)) {
-					a.target = "_blank";
-					a.classList.add("external");
-				}
-				else if (sameUrl(url, currentUrl))
-					a.setAttribute("aria-current", "page");
-
-				li.append(a);
-			}
+			if ("href" in item)
+				li.append(buildLink(nameNode, item.href));
 			else
 				li.append(nameNode);
 		}
@@ -449,6 +441,21 @@ function buildNavTree(items, ul, baseUrl) {
 			ul.push(li);
 	}
 	return ul;
+
+	function buildLink(textNode, href) {
+		const
+			url = new URL(href, baseUrl),
+			a = document.createElement("a");
+		a.append(textNode);
+		a.href = url;
+		if (externalUrl(url)) {
+			a.target = "_blank";
+			a.classList.add("external");
+		}
+		else if (sameUrl(url, currentUrl))
+			a.setAttribute("aria-current", "page");
+		return a;
+	}
 }
 
 function sameUrl(url1, url2) {
@@ -477,6 +484,6 @@ function DOMReady() {
 }
 
 async function onFontsLoaded(callback) {
-	const fonts = Array.from((await document.fonts).values());
+	const fonts = Array.from(await document.fonts);
 	callback(fonts);
 }

@@ -64,6 +64,13 @@ nav#toc-offcanvas {
 		color: var(--bs-tertiary-color);
 	}
 
+	li:has(> a + details) {
+		position: relative;
+	}
+	li > a:has(+ details) {
+		position: absolute;
+	}
+
 	ul a {
 		scroll-margin-block: 6rem;
 		@extend %f-sans-body;

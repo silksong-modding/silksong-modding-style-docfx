@@ -1,0 +1,21 @@
+- name: Articles
+  href: articles/
+- name: Api Documentation
+  href: api/
+- name: Other Stuff
+  href: articles/hello.md
+  items:
+    - href: articles/test1.md
+    - name: Double Nest
+      items:
+        - href: articles/test2.md
+        - href: articles/test3.md
+    - name: Another Nest
+      href: articles/test4.md
+      items:
+      - href: articles/test5.md
+      - href: articles/test6.md
+    - href: articles/test7.md
+- name: More Stuff
+  items:
+    - href: articles/test8.md
