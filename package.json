@@ -6,6 +6,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "prepare": "husky",
+    "format": "prettier --write .",
     "build": "node build.ts",
     "test": "node build.ts --test && docfx ./test-mod/docs/docfx.json --serve",
     "clean": "node build.ts --clean"
@@ -13,6 +15,8 @@
   "devDependencies": {
     "@types/node": "^25.8.0",
     "@types/uglify-js": "^3.17.5",
+    "husky": "^9.1.7",
+    "prettier": "^3.8.3",
     "sass": "^1.99.0",
     "typescript": "^6.0.3",
     "uglify-js": "^3.19.3"
