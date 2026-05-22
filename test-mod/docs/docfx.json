@@ -4,9 +4,7 @@
       "src": [
         {
           "src": "..",
-          "files": [
-            "**.csproj"
-          ]
+          "files": ["**.csproj"]
         }
       ],
       "dest": "api"
