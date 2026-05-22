@@ -66,6 +66,7 @@ jobs:
             --jq '.repositories[].full_name')
 
           for repo in $repos; do
-            gh api repos/$repo/dispatches \
+            echo "Updating $repo"
+            gh api --method POST repos/$repo/dispatches \
               -f event_type="template-updated"
           done
