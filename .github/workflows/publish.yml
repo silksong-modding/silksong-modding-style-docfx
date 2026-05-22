@@ -34,6 +34,8 @@ jobs:
         with:
           client-id: ${{ secrets.BOT_CLIENT_ID }}
           private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+          permission-contents: write
       - name: Get GitHub App User ID
         id: get-user-id
         run: >-
@@ -53,7 +55,7 @@ jobs:
         run: |
           cd build
           git init
-          git remote add origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/silksong-modding/silksong-modding-style-docfx.git
+          git remote add origin https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}.git
           git add .
           git commit -m "$(date "+%Y-%m-%d %H:%M:%S")"
           git push --force origin HEAD:refs/heads/dist
