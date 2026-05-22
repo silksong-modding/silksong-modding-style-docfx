@@ -57,3 +57,15 @@ jobs:
           git add .
           git commit -m "$(date "+%Y-%m-%d %H:%M:%S")"
           git push --force origin HEAD:refs/heads/dist
+      - name: Notify consumers
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+        run: |
+          repos=$(gh api installation/repositories \
+            --paginate \
+            --jq '.repositories[].full_name')
+
+          for repo in $repos; do
+            gh api repos/$repo/dispatches \
+              -f event_type="template-updated"
+          done
