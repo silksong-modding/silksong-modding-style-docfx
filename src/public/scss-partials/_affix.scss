@@ -1,4 +1,3 @@
-
 // Styles for the right sidebar/table of contents.
 
 @use "./typography" as *;
@@ -6,48 +5,48 @@
 @use "./theme" as *;
 
 nav#affix-custom {
-	border: 0;
-	display: flex;
-	flex-direction: column;
-	width: 14.4rem;
-	gap: 1rem;
-	order: 1;
-	@include sticky-sidebar;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  width: 14.4rem;
+  gap: 1rem;
+  order: 1;
+  @include sticky-sidebar;
 
-	@media print {
-		display: none;
-	}
+  @media print {
+    display: none;
+  }
 
-	@media (max-width: 1140px) {
-		display: none;
-	}
+  @media (max-width: 1140px) {
+    display: none;
+  }
 
-	&:not(:has(li)) {
-		display: none;
-	}
+  &:not(:has(li)) {
+    display: none;
+  }
 
-	@include fleur-top("images/fleur_top.svg", 2rem);
-	@include fleur-bottom("images/fleur_bottom.svg", 1rem);
+  @include fleur-top("images/fleur_top.svg", 2rem);
+  @include fleur-bottom("images/fleur_bottom.svg", 1rem);
 
-	h2 {
-		letter-spacing: 0.05em;
-		text-transform: uppercase;
-		font-size: .88rem;
-		padding: 0 0 .5em;
-		margin: 0;
-	}
+  h2 {
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.88rem;
+    padding: 0 0 0.5em;
+    margin: 0;
+  }
 
-	ul {
-		list-style: none;
-		padding: 0;
-		margin: 0;
-	}
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
 
-	li + li {
-		margin-top: .4rem;
-	}
+  li + li {
+    margin-top: 0.4rem;
+  }
 
-	a:not(:hover) {
-		text-decoration: none;
-	}
+  a:not(:hover) {
+    text-decoration: none;
+  }
 }

@@ -13,8 +13,8 @@
     - name: Another Nest
       href: articles/test4.md
       items:
-      - href: articles/test5.md
-      - href: articles/test6.md
+        - href: articles/test5.md
+        - href: articles/test6.md
     - href: articles/test7.md
 - name: More Stuff
   items:

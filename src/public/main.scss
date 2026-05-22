@@ -1,5 +1,4 @@
-﻿
-// Styles for the main content area, and a few global changes/resets
+﻿// Styles for the main content area, and a few global changes/resets
 
 @use "./scss-partials/typography" as *;
 @use "./scss-partials/utility" as *;
@@ -10,173 +9,189 @@
 @use "./scss-partials/toc";
 @use "./scss-partials/affix";
 
-
 // || BREADCRUMB
 
 nav#breadcrumb {
-	font-size: 0.88rem;
-	min-height: calc(1lh + 1rem);
+  font-size: 0.88rem;
+  min-height: calc(1lh + 1rem);
 
-	@media print {
-		min-height: 0;
-	}
+  @media print {
+    min-height: 0;
+  }
 
-	ol.breadcrumb {
-		font-size: 0.88rem;
-	}
+  ol.breadcrumb {
+    font-size: 0.88rem;
+  }
 }
 
 // || MAIN CONTENT
 
 body > .content {
-	display: flex;
-	column-gap: 3rem;
-	padding: gutter-x(1) gutter-x(.5);
-	margin-inline: auto;
-	width: 100%;
-	max-width: 1768px;
-	flex: 1;
+  display: flex;
+  column-gap: 3rem;
+  padding: gutter-x(1) gutter-x(0.5);
+  margin-inline: auto;
+  width: 100%;
+  max-width: 1768px;
+  flex: 1;
 
-	@media print {
-		padding: 0;
-		margin: 0;
-	}
+  @media print {
+    padding: 0;
+    margin: 0;
+  }
 
-	main {
-		padding: 0;
-		flex: 1;
-	}
+  main {
+    padding: 0;
+    flex: 1;
+  }
 }
 main {
-	h1, h2, h3, h4, h5, h6 {
-		margin-bottom: 1rem;
-	}
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-bottom: 1rem;
+  }
 }
 body[data-search] {
-	.content > :not(main),
-	main > :not(#search-results-container) {
-		display: none !important;
-	}
+  .content > :not(main),
+  main > :not(#search-results-container) {
+    display: none !important;
+  }
 }
 
 // || SEARCH RESULTS
 
 #search-results-container {
-	body:not([data-search]) & {
-		display: none;
-	}
+  body:not([data-search]) & {
+    display: none;
+  }
 
-	padding: 0 gutter-x(1);
+  padding: 0 gutter-x(1);
 
-	.search-list {
-		color: var(--bs-secondary-color);
-		@extend %f-serif-body;
-		font-size: 1.2rem;
-		font-style: italic;
-		margin-bottom: 0.3em;
-	}
+  .search-list {
+    color: var(--bs-secondary-color);
+    @extend %f-serif-body;
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 0.3em;
+  }
 
-	.sr-item {
-		margin-block: gutter-x(1) gutter-x(1.25);
+  .sr-item {
+    margin-block: gutter-x(1) gutter-x(1.25);
 
-		h2 {
-			border: none;
-			margin: 0;
-		}
+    h2 {
+      border: none;
+      margin: 0;
+    }
 
-		.item-href {
-			display: inline-block;
-			color: $c-tertiary;
-			font-size: 0.85rem;
-			font-style: italic;
-			margin-block: .3rem;
+    .item-href {
+      display: inline-block;
+      color: $c-tertiary;
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-block: 0.3rem;
 
-			&:not(:hover) {
-				text-decoration: none;
-			}
-		}
+      &:not(:hover) {
+        text-decoration: none;
+      }
+    }
 
-		.item-brief {
-			font-size: 1em;
-		}
-	}
+    .item-brief {
+      font-size: 1em;
+    }
+  }
 
-	div > ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		display: block;
-	}
+  div > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+  }
 }
 
 nav.pagination {
-	ul {
-		display: flex;
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		gap: gutter-x(.3);
-	}
+  ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: gutter-x(0.3);
+  }
 
-	a {
-		display: block;
-		padding: gutter-x(.25) gutter-x(.5);
-		border: 1px solid $c-primary;
-		background: $c-bg-secondary;
-		color: $c-primary;
+  a {
+    display: block;
+    padding: gutter-x(0.25) gutter-x(0.5);
+    border: 1px solid $c-primary;
+    background: $c-bg-secondary;
+    color: $c-primary;
 
-		&[aria-current] {
-			font-weight: bold;
-			background: $c-bg-tertiary;
-		}
+    &[aria-current] {
+      font-weight: bold;
+      background: $c-bg-tertiary;
+    }
 
-		&:not(:hover), &[aria-current] {
-			text-decoration: none;
-		}
-	}
+    &:not(:hover),
+    &[aria-current] {
+      text-decoration: none;
+    }
+  }
 }
 
 // || FOOTER
 
 footer {
-	background: $c-bg-tertiary;
+  background: $c-bg-tertiary;
 }
 
 // || MISC
 
 :root {
-	--bs-font-sans-serif: $f-sans-body-stack;
-	@extend %f-sans-body;
-	scroll-padding-top: gutter-x(3.61);
+  --bs-font-sans-serif: $f-sans-body-stack;
+  @extend %f-sans-body;
+  scroll-padding-top: gutter-x(3.61);
 }
 
 body *:focus-visible {
-	outline: 1px solid $c-primary !important;
+  outline: 1px solid $c-primary !important;
 }
 
-h1, h2, h3, h4, h5, h6, .navbar .navbar-brand {
-	@extend %f-serif-header;
-	line-height: 1.3;
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.navbar .navbar-brand {
+  @extend %f-serif-header;
+  line-height: 1.3;
 }
 
-h1, h2, hr, nav#affix h5 {
-	@extend %border-bottom-fade-right;
+h1,
+h2,
+hr,
+nav#affix h5 {
+  @extend %border-bottom-fade-right;
 }
 
 .next-article {
-	@extend %border-bottom-fade-both;
-	border-image-slice: 1 0 0;
+  @extend %border-bottom-fade-both;
+  border-image-slice: 1 0 0;
 }
 
 .form-control {
-	background-color: $c-bg-secondary;
+  background-color: $c-bg-secondary;
 }
 
-.dropdown-menu, .btn, .form-control {
-	border-radius: 0;
+.dropdown-menu,
+.btn,
+.form-control {
+  border-radius: 0;
 }
 
 .actionbar > button {
-	margin-top: -.65em;
-	margin-left: -.8em;
+  margin-top: -0.65em;
+  margin-left: -0.8em;
 }
