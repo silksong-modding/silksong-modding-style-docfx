@@ -1,0 +1,28 @@
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  build-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "lts/*"
+          check-latest: true
+      - run: npm ci
+      - run: npm run build
+      - name: Publish to dist branch
+        if: ${{ github.event_name == 'push' }}
+        run: |
+          cd build
+          git init
+          git add .
+          git commit -m "$(date "+%Y-%m-%d %H:%M:%S")"
+          git push --force origin HEAD:refs/heads/dist
