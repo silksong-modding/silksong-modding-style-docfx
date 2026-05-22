@@ -25,6 +25,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' }}
+    needs:
+      - build
     steps:
       - name: Get App Token
         uses: actions/create-github-app-token@v3
