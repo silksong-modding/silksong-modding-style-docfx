@@ -1,0 +1,78 @@
+{{!Based off of docfx modern and docfx default, but separated into a partials and restructured for improved accessibility.}}
+
+{{!include(/^public/.*/)}}
+{{!include(favicon.ico)}}
+{{!include(logo.svg)}}
+
+<!DOCTYPE html>
+<html {{#_lang}}lang="{{_lang}}"{{/_lang}}{{^_lang}}lang="en"{{/_lang}}>
+
+	{{>partials/head}}
+
+	{{^redirect_url}}
+	<body class="tex2jax_ignore" data-layout="{{_layout}}{{layout}}" data-yaml-mime="{{yamlmime}}">
+
+		{{!skip-links are a recommended accessibility feature for screen reader and keyboard-navigating users.}}
+		<a class="skip-link" href="#main-article-anchor">Skip to Main Content</a>
+
+		{{>partials/subtemplates}}
+
+		{{>partials/header}}
+
+		<div class="content">
+			{{^_disableToc}}
+			{{>partials/toc}}
+			{{/_disableToc}}
+
+			{{!the "in this article" section is more useful if it can be navigated prior to the actual article content}}
+			{{^_disableAffix}}
+			{{>partials/affix}}
+			{{/_disableAffix}}
+
+			<main class="container-xxl">
+				<div class="actionbar">
+					{{^_disableToc}}
+					<button class="btn btn-lg border-0 d-md-none"
+							type="button" data-bs-toggle="offcanvas" data-bs-target="#toc-offcanvas"
+							aria-controls="toc-offcanvas" aria-expanded="false"
+							title="{{__global.tocToggleButton}}">
+						<i class="bi bi-list"></i>
+						<span class="sr-only">{{__global.tocToggleButton}}</span>
+					</button>
+					{{/_disableToc}}
+
+					{{^_disableBreadcrumb}}
+					<nav id="breadcrumb"></nav>
+					{{/_disableBreadcrumb}}
+				</div>
+
+				{{#_enableSearch}}
+				{{>partials/searchresults}}
+				{{/_enableSearch}}
+
+				<article data-uid="{{uid}}" id="main-article-anchor">
+					{{!body}}
+				</article>
+
+				{{^_disableContribution}}
+				<div class="contribution d-print-none">
+					{{#sourceurl}}
+					<a href="{{sourceurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
+					{{/sourceurl}}
+					{{^sourceurl}}{{#docurl}}
+					<a href="{{docurl}}" class="edit-link">{{__global.improveThisDoc}}</a>
+					{{/docurl}}{{/sourceurl}}
+				</div>
+				{{/_disableContribution}}
+
+				{{^_disableNextArticle}}
+				<div class="next-article d-print-none" id="nextArticle"></div>
+				{{/_disableNextArticle}}
+			</main>
+		</div>
+
+		{{>partials/footer}}
+
+	</body>
+	{{/redirect_url}}
+</html>
