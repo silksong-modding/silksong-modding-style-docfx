@@ -1,0 +1,58 @@
+name: Build Docs
+on:
+  workflow_call:
+    inputs:
+      environment-name:
+        description: "The deployment environment to be used in the workflow"
+        required: true
+        type: string
+      docs-path:
+        description:
+          "The directory containing docfx configuration and artifacts, where the docfx build is
+          executed"
+        required: true
+        type: string
+      dotnet-build:
+        description: "Whether to run a dotnet build before a docfx build (default true)"
+        type: boolean
+        default: true
+
+permissions:
+  actions: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.environment-name }}
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v6
+      - name: Get template
+        run: |
+          mkdir ${{ inputs.docs-path }}/silksong-modding
+          gh api repos/silksong-modding/silksong-modding-style-docfx/tarball/dist >> template.tar.gz
+          tar -xzf template.tar.gz -C ${{ inputs.docs-path }}/silksong-modding --strip-components 1
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 10.x
+      - name: Build project
+        if: ${{ inputs.dotnet-build }}
+        run: dotnet build -c Release
+      - name: DocFX build
+        working-directory: ${{ inputs.docs-path }}
+        continue-on-error: false
+        run: dnx docfx --yes
+      - name: Upload assets
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ${{ inputs.docs-path }}/_site
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5
