@@ -1,8 +1,6 @@
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
 
 permissions:
   contents: write
@@ -24,7 +22,6 @@ jobs:
           path: build
   publish:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
     needs:
       - build
     steps:
