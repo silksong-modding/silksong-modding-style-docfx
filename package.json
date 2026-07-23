@@ -17,7 +17,7 @@
     "@types/uglify-js": "^3.17.5",
     "husky": "^9.1.7",
     "prettier": "^3.9.6",
-    "sass": "^1.101.3",
+    "sass": "^1.101.6",
     "typescript": "^7.0.2",
     "uglify-js": "^3.19.3"
   }
