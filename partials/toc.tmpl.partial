@@ -1,0 +1,18 @@
+<nav class="offcanvas-md offcanvas-start" aria-labelledby="toc-offcanvas-label" id="toc-offcanvas">
+	<div class="offcanvas-header">
+		<h2 class="offcanvas-title" id="toc-offcanvas-label">Table of Contents</h2>
+		<button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#toc-offcanvas" title="Close">
+			<span class="sr-only">Close</span>
+		</button>
+	</div>
+	{{^_disableTocFilter}}
+	<search role="search" aria-labelledby="toc-offcanvas-label" aria-label="{{__global.tocFilter}}">
+		<i class="bi bi-filter"></i>
+		<input class="form-control" type="search" autocomplete="off" value="" placeholder="{{__global.tocFilter}}" aria-label="{{__global.tocFilter}}"/>
+		{{!An invisible live region lets screen reader users know that typing in the filter box did something.}}
+		<div aria-live="polite" class="sr-only"></div>
+	</search>
+	{{/_disableTocFilter}}
+	<ul></ul>
+</nav>
+<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initToc());</script>
