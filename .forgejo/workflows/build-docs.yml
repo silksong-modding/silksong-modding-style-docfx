@@ -1,0 +1,74 @@
+name: Build Docs
+on:
+  workflow_call:
+    inputs:
+      docs-path:
+        description:
+          "The directory containing docfx configuration and artifacts, where the docfx build is
+          executed"
+        required: true
+        type: string
+      dotnet-build:
+        description: "Whether to run a dotnet build before a docfx build (default true)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Get template
+        env:
+          DOCS_PATH: ${{ inputs.docs-path }}
+          SERVER_URL: ${{ forgejo.server_url }}
+        # Forgejo's archive endpoint is the equivalent of GitHub's tarball API: a .tar.gz of the
+        # dist branch with everything under a single top-level directory.
+        run: |
+          curl --fail --silent --show-error --location --output template.tar.gz \
+            "$SERVER_URL/api/v1/repos/silksong-modding/silksong-modding-style-docfx/archive/dist.tar.gz"
+          mkdir -p "$DOCS_PATH/silksong-modding"
+          tar -xzf template.tar.gz -C "$DOCS_PATH/silksong-modding" --strip-components 1
+          rm template.tar.gz
+      - name: Setup .NET
+        uses: https://github.com/actions/setup-dotnet@0f4a354dd5547a28c70b7853dbd95d5b67886e73 # v6.1.0
+        with:
+          dotnet-version: 10.x
+      - name: Build project
+        if: ${{ inputs.dotnet-build }}
+        run: dotnet build -c Release
+      - name: DocFX build
+        working-directory: ${{ inputs.docs-path }}
+        run: dnx docfx --yes
+      - name: Resolve site URL
+        id: site
+        env:
+          OWNER: ${{ forgejo.repository_owner }}
+          REPOSITORY: ${{ forgejo.repository }}
+        run: |
+          OWNER="${OWNER,,}"
+          REPO="${REPOSITORY#*/}"
+          if [ "${REPO,,}" = "$OWNER.pages" ]; then
+            # git-pages serves the <owner>.pages repo at the root of the owner's subdomain.
+            SITE="https://$OWNER.pages.silksong-modding.org/"
+          else
+            SITE="https://$OWNER.pages.silksong-modding.org/$REPO/"
+          fi
+          echo "Deploying to $SITE"
+          echo "url=$SITE" >> "$FORGEJO_OUTPUT"
+      - name: Deploy
+        uses: https://code.forgejo.org/actions/git-pages@2b24bbb7ff943d3c8fe1df91326adec66daea6dd # v2.2.0
+        with:
+          site: ${{ steps.site.outputs.url }}
+          # git-pages accepts any token with push access to the repo. PAGES_TOKEN is a fallback in
+          # case the automatic token is rejected; callers pass it with `secrets: inherit`.
+          token: ${{ secrets.PAGES_TOKEN || forgejo.token }}
+          source: ${{ inputs.docs-path }}/_site/
