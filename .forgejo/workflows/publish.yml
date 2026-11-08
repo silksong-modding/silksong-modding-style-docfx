@@ -1,0 +1,69 @@
+name: Publish
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: https://code.forgejo.org/actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: https://code.forgejo.org/actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "lts/*"
+          check-latest: true
+      - run: npm ci
+      - run: npm run build
+      - name: Publish to dist branch
+        if: ${{ forgejo.event_name == 'push' }}
+        env:
+          TOKEN: ${{ forgejo.token }}
+          SERVER_URL: ${{ forgejo.server_url }}
+          REPOSITORY: ${{ forgejo.repository }}
+          SOURCE_SHA: ${{ forgejo.sha }}
+        run: |
+          cd build
+          git init --initial-branch dist
+          git config user.name "Docs Bot"
+          git config user.email "docs-bot@noreply.silksong-modding.org"
+          git add .
+          git commit -m "Build of ${SOURCE_SHA}"
+          git push --force "https://ci:${TOKEN}@${SERVER_URL#https://}/${REPOSITORY}.git" HEAD:refs/heads/dist
+      - name: Notify consumers
+        if: ${{ forgejo.event_name == 'push' }}
+        env:
+          DOCS_BOT_TOKEN: ${{ secrets.DOCS_BOT_TOKEN }}
+          API_URL: ${{ forgejo.server_url }}/api/v1
+        run: |
+          failed=0
+          while read -r repo workflow; do
+            case "$repo" in ""|"#"*) continue ;; esac
+            echo "Dispatching $workflow in $repo"
+            if ! branch=$(curl --fail-with-body --silent --show-error \
+                -H "Authorization: token $DOCS_BOT_TOKEN" \
+                "$API_URL/repos/$repo" | jq -er .default_branch); then
+              echo "  could not read $repo"; failed=1; continue
+            fi
+            if ! curl --fail-with-body --silent --show-error -X POST \
+                -H "Authorization: token $DOCS_BOT_TOKEN" \
+                -H "Content-Type: application/json" \
+                --data "{\"ref\":\"$branch\"}" \
+                "$API_URL/repos/$repo/actions/workflows/$workflow/dispatches"; then
+              echo "  dispatch failed for $repo"; failed=1
+            fi
+          done < .forgejo/docs-consumers.txt
+          exit $failed

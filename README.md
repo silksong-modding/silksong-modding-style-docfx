@@ -2,6 +2,49 @@
 
 A custom docfx theme for the [Silksong Modding Docs](https://docs.silksong-modding.org/).
 
+## Using the Theme
+
+Pushes to `main` build the theme into the `dist` branch, then trigger a docs rebuild in every
+repository listed in [`.forgejo/docs-consumers.txt`](.forgejo/docs-consumers.txt).
+
+A consuming repository builds its docs with the shared workflow, which downloads `dist`, runs docfx
+and deploys `_site` to git-pages at `https://<owner>.pages.silksong-modding.org/<repo>/`:
+
+```yaml
+# .forgejo/workflows/docs.yml
+name: Docs
+
+on:
+  push:
+    branches: [main]
+  # Triggered by silksong-modding-style-docfx when the theme changes.
+  workflow_dispatch:
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  docs:
+    # No `runs-on` here, so Forgejo expands the shared workflow's jobs into this run.
+    uses: silksong-modding/silksong-modding-style-docfx/.forgejo/workflows/build-docs.yml@main
+    with:
+      docs-path: docs # directory containing docfx.json
+      # dotnet-build: false # skip `dotnet build` for docs-only repos
+```
+
+To get rebuilds when the theme changes:
+
+1. Add the repository and its workflow file name to `.forgejo/docs-consumers.txt`.
+2. Give the `docs-bot` account write access to the repository's **Actions** unit (the `Docs bot` org
+   team: Actions write, everything else read or none). That's all the dispatch API needs, so the bot
+   can't push code.
+3. Protect the default branch: anyone who can push there controls what the dispatched workflow
+   deploys.
+
+The `DOCS_BOT_TOKEN` secret on this repository is a `docs-bot` token with the `write:repository`
+scope.
+
 ## Contributing
 
 ### Prerequisites

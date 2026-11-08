@@ -1,0 +1,12 @@
+# Repositories whose docs are rebuilt when the dist branch changes.
+# One per line: <owner>/<repo> <workflow file in .forgejo/workflows>
+# The workflow must have a `workflow_dispatch` trigger, and the docs bot must have write access to
+# the repo's Actions unit (see README).
+silksong-modding/silksong-modding.pages publish.yml
+silksong-modding/Silksong.AssetHelper docs.yml
+silksong-modding/Silksong.DataManager docs.yml
+silksong-modding/Silksong.FsmUtil docs.yml
+silksong-modding/Silksong.I18N docs.yml
+silksong-modding/Silksong.ModMenu docs.yml
+silksong-modding/Silksong.Prepatcher docs.yml
+silksong-modding/Silksong.UnityHelper docs.yml
