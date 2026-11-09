@@ -1,9 +1,9 @@
 export default {
   iconLinks: [
     {
-      icon: "github",
-      href: "https://github.com/silksong-modding",
-      title: "GitHub",
+      icon: "git",
+      href: "https://git.silksong-modding.org/silksong-modding",
+      title: "Forgejo",
     },
     {
       icon: "discord",

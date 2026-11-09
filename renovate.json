@@ -1,6 +1,4 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "local>silksong-modding/renovate"
-  ]
+  "extends": ["local>silksong-modding/renovate"]
 }
