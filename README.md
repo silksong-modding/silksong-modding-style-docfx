@@ -26,8 +26,9 @@ concurrency:
 
 jobs:
   docs:
-    # No `runs-on` here, so Forgejo expands the shared workflow's jobs into this run.
-    uses: silksong-modding/silksong-modding-style-docfx/.forgejo/workflows/build-docs.yml@main
+    # A host-qualified reusable workflow runs as a single job, so it needs a runner label.
+    runs-on: ubuntu-latest
+    uses: https://git.silksong-modding.org/silksong-modding/silksong-modding-style-docfx/.forgejo/workflows/build-docs.yml@main
     with:
       docs-path: docs # directory containing docfx.json
       # dotnet-build: false # skip `dotnet build` for docs-only repos
