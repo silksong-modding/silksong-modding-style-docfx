@@ -1,0 +1,77 @@
+{{^_disableNavbar}}
+<header class="border-bottom">
+
+	<nav id="autocollapse" aria-label="Main" class="navbar navbar-expand-md container-xxl">
+		<div class="brand-container container-l d-flex flex-row">
+
+			{{!Empty alt text because the image is purely decorative}}
+			<img id="logo" class="svg" src="{{_rel}}{{{_appLogoPath}}}{{^_appLogoPath}}logo.svg{{/_appLogoPath}}" alt="" aria-hidden="true"/>
+
+			<div class="brand-links">
+				<a class="navbar-brand" href="{{_appLogoUrl}}{{^_appLogoUrl}}https://docs.silksong-modding.org/{{/_appLogoUrl}}">Silksong Modding</a>
+
+				{{!This secondary link leads to the home page for the current library, and only appears if this isn't the modding docs home website. Needs a script because mustache templates don't have much in the way of conditional statements.}}
+				<a class="navbar-brand" href="{{_rel}}index.html">{{_appName}}</a>
+
+				<script>
+				const secondary = document.currentScript.previousElementSibling,
+					primary = secondary.previousElementSibling;
+				if (primary.innerText === secondary.innerText)
+					secondary.remove();
+				</script>
+			</div>
+
+		</div>
+
+		<button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+			<i class="bi bi-three-dots"></i>
+		</button>
+		<div class="collapse navbar-collapse" id="navpanel">
+			<div id="navbar-custom">
+				<ul class="navbar-nav">
+					<li class="nav-item-icon">
+						<details>
+							<summary class="btn" title="{{__global.changeTheme}}">
+								<i></i>
+								<span class="sr-only">{{__global.changeTheme}}</span>
+							</summary>
+							<ul class="dropdown-menu dropdown-menu-end show">
+								<li>
+									<button class="nav-link dropdown-item" data-theme="light">
+										<i class="bi bi-sun"></i>
+										{{__global.themeLight}}
+									</button>
+								</li>
+								<li>
+									<button class="nav-link dropdown-item" data-theme="dark">
+										<i class="bi bi-moon"></i>
+										{{__global.themeDark}}
+									</button>
+								</li>
+								<li>
+									<button class="nav-link dropdown-item" data-theme="auto">
+										<i class="bi bi-circle-half"></i>
+										{{__global.themeAuto}}
+									</button>
+								</li>
+							</ul>
+						</details>
+					</li>
+				</ul>
+				{{#_enableSearch}}
+				<search role="search" id="search">
+					<form>
+						<input disabled class="form-control" type="search" placeholder="{{__global.search}}" autocomplete="off" aria-label="{{__global.search}}"/>
+						<button disabled type="submit" class="bi bi-search" title="Submit">
+							<span class="sr-only">Submit</span>
+						</button>
+					</form>
+				</search>
+				{{/_enableSearch}}
+			</div>
+		</div>
+	</nav>
+	<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initNav());</script>
+
+</header>
+{{/_disableNavbar}}

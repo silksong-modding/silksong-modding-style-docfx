@@ -1,0 +1,9 @@
+<div id="search-results-container">
+	<h1>Search Results</h1>
+	<p class="search-list"></p>
+	<div></div>
+	<nav class="pagination" aria-label="Search Pagination">
+		<ul></ul>
+	</nav>
+</div>
+<script>import("./{{_rel}}public/dynamic-content.min.js").then(m => m.initSearch());</script>

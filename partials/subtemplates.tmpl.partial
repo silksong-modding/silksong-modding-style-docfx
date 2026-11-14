@@ -1,0 +1,44 @@
+<div style="display:none">
+	{{!Icon links with invisible text for screen readers.}}
+	<template id="icon-link-tmpl">
+		<li class="nav-item-icon">
+			<a class="btn border-0">
+				<i class="bi"></i>
+				<span class="sr-only"></span>
+			</a>
+		</li>
+	</template>
+
+	{{!For expandable dropdowns/trees of links which don't need javascript to expand/contract.}}
+	<template id="subtree-tmpl">
+		<li><details>
+			<summary></summary>
+			<ul></ul>
+		</details></li>
+	</template>
+
+	{{!A search result with better semantics.}}
+	<template id="search-hit-tmpl">
+		<li class="sr-item">
+			<article>
+				<h2><a class="item-title" rel="noopener noreferrer"></a></h2>
+				<a class="item-href"></a>
+				<p class="item-brief"></p>
+			</article>
+		</li>
+	</template>
+
+	{{!A pagination link.}}
+	<template id="search-pagination-tmpl">
+		<li>
+			<a href="#search-results-container" rel="noopener noreferrer"></a>
+		</li>
+	</template>
+
+	{{!An accessible, non-clickable pagination link for the current page.}}
+	<template id="search-pagination-active-tmpl">
+		<li>
+			<a aria-current="page" role="link" aria-disabled="true" tabindex="-1"></a>
+		</li>
+	</template>
+</div>
